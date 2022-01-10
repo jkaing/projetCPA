@@ -3,6 +3,9 @@ type Coord = { x: number; y: number; dx: number; dy: number }
 type Size = { height: number; width: number }
 export type State = { pos: Array<Coord>; size: Size }
 
+const dist2 = (o1: Coord, o2: Coord) =>
+  Math.abs(o1.x - o2.x) + Math.abs(o1.y - o2.y)
+
 const iterate = (bound: Size) => (coord: Coord) => {
   const dx =
     (coord.x + conf.RADIUS > bound.width || coord.x < conf.RADIUS
@@ -24,12 +27,22 @@ export const click =
   (state: State) =>
   (event: PointerEvent): State => {
     const { offsetX, offsetY } = event
+    const target = state.pos.find(
+      (p) =>
+        dist2(p, { x: offsetX, y: offsetY, dx: 0, dy: 0 }) <
+        Math.pow(conf.RADIUS, 2)
+    )
+    console.log(target)
+    if (target) {
+      target.dx += Math.random() * 10
+      target.dy += Math.random() * 10
+    }
     console.log(offsetX, offsetY)
     return state
   }
 
 const collide = (o1: Coord, o2: Coord) =>
-  Math.abs(o1.x - o2.x) + Math.abs(o1.y - o2.y) < Math.pow(conf.RADIUS, 2)
+  dist2(o1, o2) < Math.pow(2 * conf.RADIUS, 2)
 
 export const step = (state: State) => {
   state.pos.map((p1, i, arr) => {
