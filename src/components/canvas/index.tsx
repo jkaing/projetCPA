@@ -13,8 +13,8 @@ const initCanvas =
 const Canvas = ({ height, width }: { height: number; width: number }) => {
   const initialState: State = {
     pos: [
-      { x: 123, y: 123, dx: 4, dy: 4 },
-      { x: 600, y: 600, dx: -4, dy: -4 },
+      { x: 123 % width, y: 123 % height, dx: 4, dy: 4 },
+      { x: 600 % width, y: 600 % height, dx: -4, dy: -4 },
     ],
     size: { height, width },
   }
