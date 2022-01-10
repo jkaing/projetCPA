@@ -1,26 +1,28 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { useRef, useEffect, useState } from 'react'
+import Loader from './components/loader'
+import Canvas from './components/canvas'
+import './App.css'
 
-function App() {
+type Size = {
+  height: number
+  width: number
+}
+const App = () => {
+  const [size, setSize] = useState<Size | null>(null)
+  const container = useRef<any>()
+  useEffect(() => {
+    setTimeout(() => {
+      setSize({
+        height: container.current.clientHeight,
+        width: container.current.clientWidth,
+      })
+    }, 100)
+  })
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="App" ref={container}>
+      {size ? <Canvas {...size} /> : <Loader />}
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
