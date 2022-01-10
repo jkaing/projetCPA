@@ -15,20 +15,31 @@ const iterate = (bound: Size) => (coord: Coord) => {
   return {
     x: coord.x + dx,
     y: coord.y + dy,
-    dx,
-    dy,
+    dx: Math.abs(dx) < conf.MINMOVE ? 0 : dx,
+    dy: Math.abs(dy) < conf.MINMOVE ? 0 : dy,
   }
 }
 
 export const click =
   (state: State) =>
-  (event: any): State => {
+  (event: PointerEvent): State => {
     const { offsetX, offsetY } = event
     console.log(offsetX, offsetY)
     return state
   }
 
-export const step = (state: State) => ({
-  ...state,
-  pos: state.pos.map(iterate(state.size)),
-})
+const collide = (o1: Coord, o2: Coord) =>
+  Math.abs(o1.x - o2.x) + Math.abs(o1.y - o2.y) < Math.pow(conf.RADIUS, 2)
+
+export const step = (state: State) => {
+  state.pos.map((p1, i, arr) => {
+    arr.slice(i + 1).map((p2) => {
+      if (collide(p1, p2)) {
+      }
+    })
+  })
+  return {
+    ...state,
+    pos: state.pos.map(iterate(state.size)),
+  }
+}

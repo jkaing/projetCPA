@@ -12,7 +12,10 @@ const initCanvas =
 
 const Canvas = ({ height, width }: { height: number; width: number }) => {
   const initialState: State = {
-    pos: [{ x: 123, y: 123, dx: 4, dy: 4 }],
+    pos: [
+      { x: 123, y: 123, dx: 4, dy: 4 },
+      { x: 600, y: 600, dx: -4, dy: -4 },
+    ],
     size: { height, width },
   }
 
@@ -24,7 +27,7 @@ const Canvas = ({ height, width }: { height: number; width: number }) => {
     render(ctx)(state.current)
     requestAnimationFrame(() => iterate(ctx))
   }
-  const onClick = (e: any) => {
+  const onClick = (e: PointerEvent) => {
     state.current = click(state.current)(e)
   }
   useEffect(() => {
