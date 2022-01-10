@@ -34,8 +34,8 @@ export const click =
     )
     console.log(target)
     if (target) {
-      target.dx += Math.random() * 10
-      target.dy += Math.random() * 10
+      target.dx += Math.random() * 20-10
+      target.dy += Math.random() * 20-10
     }
     console.log(offsetX, offsetY)
     return state
