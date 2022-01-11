@@ -4,7 +4,7 @@ type Size = { height: number; width: number }
 export type State = { pos: Array<Coord>; size: Size }
 
 const dist2 = (o1: Coord, o2: Coord) =>
-  Math.abs(o1.x - o2.x) + Math.abs(o1.y - o2.y)
+  Math.pow(o1.x - o2.x, 2) + Math.pow(o1.y - o2.y, 2)
 
 const iterate = (bound: Size) => (coord: Coord) => {
   const dx =
@@ -32,10 +32,9 @@ export const click =
         dist2(p, { x: offsetX, y: offsetY, dx: 0, dy: 0 }) <
         Math.pow(conf.RADIUS, 2)
     )
-    console.log(target)
     if (target) {
-      target.dx += Math.random() * 20-10
-      target.dy += Math.random() * 20-10
+      target.dx += Math.random() * 10
+      target.dy += Math.random() * 10
     }
     console.log(offsetX, offsetY)
     return state
