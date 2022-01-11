@@ -15,11 +15,12 @@ const iterate = (bound: Size) => (coord: Coord) => {
     (coord.y + conf.RADIUS > bound.height || coord.y < conf.RADIUS
       ? -coord.dy
       : coord.dy) * conf.FRICTION
+  if (Math.abs(dx + dy) < conf.MINMOVE) return { ...coord, dx: 0, dy: 0 }
   return {
     x: coord.x + dx,
     y: coord.y + dy,
-    dx: Math.abs(dx) < conf.MINMOVE ? 0 : dx,
-    dy: Math.abs(dy) < conf.MINMOVE ? 0 : dy,
+    dx,
+    dy,
   }
 }
 
@@ -30,13 +31,12 @@ export const click =
     const target = state.pos.find(
       (p) =>
         dist2(p, { x: offsetX, y: offsetY, dx: 0, dy: 0 }) <
-        Math.pow(conf.RADIUS, 2)
+        Math.pow(conf.RADIUS, 2) + 100
     )
     if (target) {
       target.dx += Math.random() * 10
       target.dy += Math.random() * 10
     }
-    console.log(offsetX, offsetY)
     return state
   }
 
