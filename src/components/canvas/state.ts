@@ -15,7 +15,8 @@ const iterate = (bound: Size) => (coord: Coord) => {
     (coord.y + conf.RADIUS > bound.height || coord.y < conf.RADIUS
       ? -coord.dy
       : coord.dy) * conf.FRICTION
-  if (Math.abs(dx + dy) < conf.MINMOVE) return { ...coord, dx: 0, dy: 0 }
+  if (Math.abs(dx) + Math.abs(dy) < conf.MINMOVE)
+    return { ...coord, dx: 0, dy: 0 }
   return {
     x: coord.x + dx,
     y: coord.y + dy,
