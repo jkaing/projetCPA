@@ -1,7 +1,12 @@
 import * as conf from './conf'
 type Coord = { x: number; y: number; dx: number; dy: number }
 type Size = { height: number; width: number }
-export type State = { pos: Array<Coord>; size: Size }
+export type State = {
+  pos: Array<Coord>
+  size: Size
+  player: { coord: Coord; life: number; invincible?: number }
+  endOfGame: boolean
+}
 
 const dist2 = (o1: Coord, o2: Coord) =>
   Math.pow(o1.x - o2.x, 2) + Math.pow(o1.y - o2.y, 2)
@@ -51,8 +56,31 @@ export const step = (state: State) => {
       }
     })
   })
+  if (state.player.invincible) state.player.invincible--
+  else
+    state.pos.map((p1, i) => {
+      if (collide(p1, state.player.coord)) {
+        state.player.life--
+        state.player.invincible = 20
+      }
+    })
   return {
     ...state,
     pos: state.pos.map(iterate(state.size)),
   }
+}
+
+export const mouseMove =
+  (state: State) =>
+  (event: PointerEvent): State => {
+    const { offsetX, offsetY } = event
+    state.player = {
+      ...state.player,
+      coord: { x: offsetX, y: offsetY, dx: 0, dy: 0 },
+    }
+    return state
+  }
+
+export const endOfGame = (state: State): boolean => {
+  return state.player.life > 0
 }
