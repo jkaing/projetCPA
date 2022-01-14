@@ -49,10 +49,27 @@ export const click =
 const collide = (o1: Coord, o2: Coord) =>
   dist2(o1, o2) < Math.pow(2 * conf.RADIUS, 2)
 
+const collideBoing = (p1: Coord, p2: Coord) => {
+  const nx = (p2.x - p1.x)/2*conf.RADIUS
+  const ny = (p2.y - p1.y)/2*conf.RADIUS
+  const gx = -ny
+  const gy = nx
+
+  const v1g = gx*p1.dx + gy*p1.dy
+  const v2n = nx*p2.dx + ny*p2.dy
+  const v2g = gx*p2.dx + gy*p2.dy
+  p1.dx = nx*v2n +  gx*v1g
+  p1.dy = ny*v2n +  gy*v1g
+  p2.dx = nx*v1n +  gx*v2g
+  p2.dy = ny*v1n +  gy*v2g
+ 
+}
+
 export const step = (state: State) => {
   state.pos.map((p1, i, arr) => {
     arr.slice(i + 1).map((p2) => {
       if (collide(p1, p2)) {
+         collideBoing(p1, p2)
       }
     })
   })
