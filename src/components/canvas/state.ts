@@ -58,6 +58,7 @@ const collideBoing = (p1: Coord, p2: Coord) => {
   const v1g = gx*p1.dx + gy*p1.dy
   const v2n = nx*p2.dx + ny*p2.dy
   const v2g = gx*p2.dx + gy*p2.dy
+  const v1n = nx*p1.dx + ny*p1.dy
   p1.dx = nx*v2n +  gx*v1g
   p1.dy = ny*v2n +  gy*v1g
   p2.dx = nx*v1n +  gx*v2g
