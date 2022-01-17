@@ -56,7 +56,7 @@ const Canvas = ({ height, width }: { height: number; width: number }) => {
       ref.current.addEventListener('mousemove', onMove)
     }
     return () => {
-      ref.current.removeEventListener('click', onClick)
+      ref.current.removeEventListener('click', onMove)
       ref.current.removeEventListener('mousemove', onMove)
     }
   }, [])
