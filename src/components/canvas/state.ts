@@ -50,20 +50,23 @@ const collide = (o1: Coord, o2: Coord) =>
   dist2(o1, o2) < Math.pow(2 * conf.RADIUS, 2)
 
 const collideBoing = (p1: Coord, p2: Coord) => {
-  // const nx = ((p2.x - p1.x) / 2) * conf.RADIUS
-  // const ny = ((p2.y - p1.y) / 2) * conf.RADIUS
-  // const gx = -ny
-  // const gy = nx
-  //
-  // const v1g = gx * p1.dx + gy * p1.dy
-  // const v2n = nx * p2.dx + ny * p2.dy
-  // const v2g = gx * p2.dx + gy * p2.dy
-  // const v1n = nx * p1.dx + ny * p1.dy
-  // p1.dx = nx * v2n + gx * v1g
-  // p1.dy = ny * v2n + gy * v1g
-  // p2.dx = nx * v1n + gx * v2g
-  // p2.dy = ny * v1n + gy * v2g
-  // console.log(p1.dx)
+  const nx = (p2.x - p1.x) / (2 * conf.RADIUS)
+  const ny = (p2.y - p1.y) / (2 * conf.RADIUS)
+  const gx = -ny
+  const gy = nx
+
+  const v1g = gx * p1.dx + gy * p1.dy
+  const v2n = nx * p2.dx + ny * p2.dy
+  const v2g = gx * p2.dx + gy * p2.dy
+  const v1n = nx * p1.dx + ny * p1.dy
+  p1.dx = nx * v2n + gx * v1g
+  p1.dy = ny * v2n + gy * v1g
+  p2.dx = nx * v1n + gx * v2g
+  p2.dy = ny * v1n + gy * v2g
+  p1.x += p1.dx
+  p1.y += p1.dy
+  p2.x += p2.dx
+  p2.y += p2.dy
 }
 
 export const step = (state: State) => {
@@ -75,16 +78,16 @@ export const step = (state: State) => {
     })
   })
   if (state.player.invincible) state.player.invincible--
-  else
-    state.pos.map((p1, i) => {
-      if (collide(p1, state.player.coord)) {
-        collideBoing(p1, state.player.coord)
-        state.player.coord.dx = 0
-        state.player.coord.dy = 0
+
+  state.pos.map((p1, i) => {
+    if (collide(p1, state.player.coord)) {
+      collideBoing(p1, { ...state.player.coord })
+      if (!state.player.invincible) {
         state.player.life--
         state.player.invincible = 20
       }
-    })
+    }
+  })
   return {
     ...state,
     pos: state.pos.map(iterate(state.size)),
@@ -97,7 +100,12 @@ export const mouseMove =
     const { offsetX, offsetY } = event
     state.player = {
       ...state.player,
-      coord: { x: offsetX, y: offsetY, dx: 0, dy: 0 },
+      coord: {
+        x: offsetX,
+        y: offsetY,
+        dx: offsetX - state.player.coord.x,
+        dy: offsetY - state.player.coord.y,
+      },
     }
     return state
   }
