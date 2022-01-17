@@ -1,3 +1,4 @@
+import * as conf from './conf'
 import { useRef, useEffect } from 'react'
 import { State, step, click, mouseMove, endOfGame } from './state'
 import { render } from './renderer'
@@ -16,15 +17,18 @@ const initCanvas =
 const Canvas = ({ height, width }: { height: number; width: number }) => {
   const initialState: State = {
     pos: new Array(20).fill(1).map((_) => ({
-      x: randomInt(width - 120) + 60,
-      y: randomInt(height - 120) + 60,
-      dx: 4 * randomSign(),
-      dy: 4 * randomSign(),
+      life: conf.BALLLIFE,
+      coord: {
+        x: randomInt(width - 120) + 60,
+        y: randomInt(height - 120) + 60,
+        dx: 4 * randomSign(),
+        dy: 4 * randomSign(),
+      },
     })),
     size: { height, width },
     player: {
       coord: { x: 500 % width, y: 500 % height, dx: 0, dy: 0 },
-      life: 10,
+      life: conf.PLAYERLIFE,
     },
     endOfGame: true,
   }
