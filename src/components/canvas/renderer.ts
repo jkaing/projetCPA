@@ -52,24 +52,7 @@ const drawCirle = (
   ctx.fill()
 }
 
-export const render = (ctx: CanvasRenderingContext2D) => (state: State) => {
-  clear(ctx)
-  state.pos.map((c) =>
-    drawCirle(
-      ctx,
-      c.coord,
-      rgbaTorgb(COLORS.RED, (conf.BALLLIFE - c.life) * (1 / conf.BALLLIFE))
-    )
-  )
-  drawCirle(
-    ctx,
-    state.player.coord,
-    rgbaTorgb(
-      COLORS.BLUE,
-      (conf.PLAYERLIFE - state.player.life) * (1 / conf.PLAYERLIFE)
-    )
-  )
-
+const diplayGameText = (ctx: CanvasRenderingContext2D) => (state: State) => {
   ctx.font = '96px arial'
   ctx.strokeText(`life ${state.player.life}`, 20, 100)
   ctx.strokeText(
@@ -79,6 +62,24 @@ export const render = (ctx: CanvasRenderingContext2D) => (state: State) => {
     20,
     200
   )
+}
+
+const computeColor = (life: number, maxLife: number, baseColor: string) =>
+  rgbaTorgb(baseColor, (maxLife - life) * (1 / maxLife))
+
+export const render = (ctx: CanvasRenderingContext2D) => (state: State) => {
+  clear(ctx)
+
+  state.pos.map((c) =>
+    drawCirle(ctx, c.coord, computeColor(c.life, conf.BALLLIFE, COLORS.RED))
+  )
+  drawCirle(
+    ctx,
+    state.player.coord,
+    computeColor(state.player.life, conf.PLAYERLIFE, COLORS.BLUE)
+  )
+
+  diplayGameText(ctx)(state)
 
   if (state.endOfGame) {
     const text = state.pos.length > 0 ? 'YOU LOSE' : 'YOU WIN'
