@@ -54,15 +54,6 @@ const drawCirle = (
 
 export const render = (ctx: CanvasRenderingContext2D) => (state: State) => {
   clear(ctx)
-  ctx.font = '96px arial'
-  ctx.strokeText(`life ${state.player.life}`, 20, 100)
-  ctx.strokeText(
-    `balls life ${state.pos
-      .map((p) => p.life)
-      .reduce((acc, val) => acc + val, 0)}`,
-    20,
-    200
-  )
   state.pos.map((c) =>
     drawCirle(
       ctx,
@@ -78,6 +69,17 @@ export const render = (ctx: CanvasRenderingContext2D) => (state: State) => {
       (conf.PLAYERLIFE - state.player.life) * (1 / conf.PLAYERLIFE)
     )
   )
+
+  ctx.font = '96px arial'
+  ctx.strokeText(`life ${state.player.life}`, 20, 100)
+  ctx.strokeText(
+    `balls life ${state.pos
+      .map((p) => p.life)
+      .reduce((acc, val) => acc + val, 0)}`,
+    20,
+    200
+  )
+
   if (state.endOfGame) {
     const text = state.pos.length > 0 ? 'YOU LOSE' : 'YOU WIN'
     ctx.font = '48px'
