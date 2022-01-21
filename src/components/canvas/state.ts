@@ -5,7 +5,6 @@ type Size = { height: number; width: number }
 export type State = {
   pos: Array<Ball>
   size: Size
-  player: Ball
   endOfGame: boolean
 }
 
@@ -92,21 +91,6 @@ export const step = (state: State) => {
       }
     })
   })
-  if (state.player.invincible) state.player.invincible--
-
-  state.pos.map((p1, i) => {
-    if (collide(p1.coord, state.player.coord)) {
-      collideBoing(p1.coord, { ...state.player.coord })
-      if (!state.player.invincible) {
-        state.player.life--
-        state.player.invincible = 20
-      }
-      if (!p1.invincible) {
-        p1.life--
-        p1.invincible = 20
-      }
-    }
-  })
   return {
     ...state,
     pos: state.pos.map(iterate(state.size)).filter((p) => p.life > 0),
@@ -116,18 +100,7 @@ export const step = (state: State) => {
 export const mouseMove =
   (state: State) =>
   (event: PointerEvent): State => {
-    const { offsetX, offsetY } = event
-    state.player = {
-      ...state.player,
-      coord: {
-        x: offsetX,
-        y: offsetY,
-        dx: offsetX - state.player.coord.x,
-        dy: offsetY - state.player.coord.y,
-      },
-    }
     return state
   }
 
-export const endOfGame = (state: State): boolean =>
-  state.player.life > 0 && state.pos.length > 0
+export const endOfGame = (state: State): boolean => true
