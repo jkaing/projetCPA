@@ -2,8 +2,9 @@
 
 ## S7
 
-to do : 2 balles rouges sans la bleu
+Fourni : 2 balles rouges sans la bleu
 
+A faire : 
 - ajouter des balles
 - changer la couleur des balles
 - zoom translation
@@ -14,16 +15,18 @@ to do : 2 balles rouges sans la bleu
 
 ## S8
 
-to do : correction S7
+Fourni : correction S7
 
+A faire : 
 - ajouter la balle bleu
 - collision avec les rouges
 - balle bleu golf
 
 ## S9
 
-to do : correction S8
+Fourni : correction S8
 
+A faire : 
 - force gravitationnel
 - random work
 - magnetic
