@@ -1,31 +1,52 @@
 # CPA
+
 ## Pour lancer le projet
-### Prérequis 
+
+### Prérequis
+
 - nodejs
 
 ### Installation
+
 ```bash
 npm install
 ```
+
 ou avec yarn
+
 ```bash
 yarn install
 ```
 
+ou à la PPTI
+
+```bash
+./yarn.sh
+```
+
 ### Lancer le projet
+
 ```bash
 npm run start
 ```
+
 ou avec yarn
+
 ```bash
 yarn start
+```
+
+ou à la PPTI
+
+```bash
+./start.sh
 ```
 
 ## S7
 
 Fourni : 2 balles rouges sans la bleu
 
-A faire : 
+A faire :
 
 - ajouter des balles
 - changer la couleur des balles
@@ -37,9 +58,9 @@ A faire :
 
 ## S8
 
-Fourni :  correction S7
+Fourni : correction S7
 
-A faire : 
+A faire :
 
 - ajouter la balle bleu
 - collision avec les rouges
@@ -49,7 +70,7 @@ A faire :
 
 Fourni : correction S8
 
-A faire : 
+A faire :
 
 - force gravitationnel
 - random work
