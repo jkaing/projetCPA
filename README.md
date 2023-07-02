@@ -18,11 +18,6 @@ ou avec yarn
 yarn install
 ```
 
-ou à la PPTI
-
-```bash
-./yarn.sh
-```
 
 ### Lancer le projet
 
@@ -34,12 +29,6 @@ ou avec yarn
 
 ```bash
 yarn start
-```
-
-ou à la PPTI
-
-```bash
-./start.sh
 ```
 
 ## S7
