@@ -65,3 +65,22 @@ A faire :
 - random work
 - magnetic
 - frottements
+
+
+## Projet
+
+Objectif créer un petit jeu en 2D (ou 3D isométrique) jouable en navigateur.
+
+Contraintes :
+Avoir au moins un de ces éléments présent dans le jeu :
+- de la physique (collision, gravité)
+- de la génération aléatoire (création de niveau aléatoire: labyrinthe, plateforme, ennemi)
+- du pathfinding (des éléments de jeu utilisant un algo de pathfinding: Dijkstra, A*, D*)
+
+### Exemples/Idées
+- jeu de plateforme: gravité, collision, niveaux aléatoires
+- aventure (zelda like): collision, pathfinding, niveaux aléatoire
+- rogue like: collision, pathfinding, niveaux aléatoire
+- shoot them up: gravité, collision, ennemis aléatoire
+- jeu de billard: collision
+- pacman: pathfinding
