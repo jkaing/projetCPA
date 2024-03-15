@@ -18,7 +18,6 @@ ou avec yarn
 yarn install
 ```
 
-
 ### Lancer le projet
 
 ```bash
@@ -29,6 +28,13 @@ ou avec yarn
 
 ```bash
 yarn start
+```
+
+### Changer le cache de yarn (pour ne pas dépasser le quota de la ppit)
+
+```bash
+mkdir /Vrac/cache-yarn
+yarn config set cache-folder /Vrac/cache-yarn
 ```
 
 ## S7
@@ -66,18 +72,19 @@ A faire :
 - magnetic
 - frottements
 
-
 ## Projet
 
 Objectif créer un petit jeu en 2D (ou 3D isométrique) jouable en navigateur.
 
 Contraintes :
 Avoir au moins un de ces éléments présent dans le jeu :
+
 - de la physique (collision, gravité)
 - de la génération aléatoire (création de niveau aléatoire: labyrinthe, plateforme, ennemi)
 - du pathfinding (des éléments de jeu utilisant un algo de pathfinding: Dijkstra, A*, D*)
 
 ### Exemples/Idées
+
 - jeu de plateforme: gravité, collision, niveaux aléatoires
 - aventure (zelda like): collision, pathfinding, niveaux aléatoire
 - rogue like: collision, pathfinding, niveaux aléatoire
