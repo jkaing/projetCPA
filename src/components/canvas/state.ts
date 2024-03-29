@@ -2,7 +2,10 @@ import * as conf from './conf'
 type Coord = { x: number; y: number; dx: number; dy: number }
 type Ball = { coord: Coord; life: number; invincible?: number }
 type Size = { height: number; width: number }
+
 export type State = {
+  plane: Ball
+
   pos: Array<Ball>
   size: Size
   endOfGame: boolean
@@ -35,6 +38,53 @@ const iterate = (bound: Size) => (ball: Ball) => {
     },
   }
 }
+
+export const changeDirection =
+(state: State) =>
+(event: KeyboardEvent): State => {
+  /*
+  switch (event.key) {
+    case "ArrowDown":
+      // Faire quelque chose pour la touche "flèche vers le bas" pressée.
+      state.plane.coord.y = state.plane.coord.y + 1
+      //state.plane.coord.dy += 0
+      return state
+    case "ArrowUp":
+      // Faire quelque chose pour la touche "up arrow" pressée.
+      state.plane.coord.y -= 1
+      //state.plane.coord.dy += 0
+      return state
+    case "ArrowLeft":
+      // Faire quelque chose pour la touche "left arrow" pressée.
+      state.plane.coord.x += 1
+      //state.plane.coord.dx += 10
+      return state
+    case "ArrowRight":
+      // Faire quelque chose pour la touche "right arrow" pressée.
+      state.plane.coord.x -= 1
+      //state.plane.coord.dx -= 10
+      return state
+  }
+  */
+  if (event.key === "ArrowDown") {
+    // Faire quelque chose pour la touche "flèche vers le bas" pressée.
+    state.plane.coord.y += 10
+  }
+  else if (event.key === "ArrowUp") {
+    // Faire quelque chose pour la touche "up arrow" pressée.
+    state.plane.coord.y -= 20
+  }
+  else if (event.key === "ArrowLeft") {
+    // Faire quelque chose pour la touche "left arrow" pressée.
+    state.plane.coord.x += 20
+  }
+  else if (event.key === "ArrowRight") {
+    // Faire quelque chose pour la touche "right arrow" pressée.
+    state.plane.coord.x -= 20
+  }
+  
+  return state
+  }
 
 export const click =
   (state: State) =>
@@ -90,9 +140,22 @@ export const step = (state: State) => {
         collideBoing(p1.coord, p2.coord)
       }
     })
+
+    if (collide(state.plane.coord, p1.coord)) {
+      if (!p1.invincible) {
+        p1.life--
+        p1.invincible = 20
+      }
+      if (!state.plane.invincible) {
+        state.plane.life--
+        state.plane.invincible = 20
+      }
+      collideBoing(p1.coord, state.plane.coord)
+    }
   })
   return {
     ...state,
+    plane: iterate(state.size)(state.plane),
     pos: state.pos.map(iterate(state.size)).filter((p) => p.life > 0),
   }
 }

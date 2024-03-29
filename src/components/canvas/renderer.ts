@@ -52,6 +52,22 @@ const drawCirle = (
   ctx.fill()
 }
 
+const drawTriangle = (
+  ctx: CanvasRenderingContext2D,
+  { x, y }: { x: number; y: number },
+  color: string
+  ) => {
+    ctx.beginPath()
+    ctx.moveTo(90,130)
+    ctx.lineTo(95,150)
+    ctx.lineTo(150,80)
+    ctx.lineTo(90,130)
+    ctx.fillStyle = color
+    ctx.stroke();
+    //ctx.lineWidth = 15;
+    ctx.fill()
+  }
+
 const computeColor = (life: number, maxLife: number, baseColor: string) =>
   rgbaTorgb(baseColor, (maxLife - life) * (1 / maxLife))
 
@@ -61,6 +77,10 @@ export const render = (ctx: CanvasRenderingContext2D) => (state: State) => {
   state.pos.map((c) =>
     drawCirle(ctx, c.coord, computeColor(c.life, conf.BALLLIFE, COLORS.RED))
   )
+
+  drawCirle(ctx, state.plane.coord, computeColor(state.plane.life, conf.BALLLIFE, COLORS.GREEN))
+  
+  //drawTriangle(ctx, state.plane.coord, computeColor(state.plane.life, conf.BALLLIFE, COLORS.GREEN))
 
   if (state.endOfGame) {
     const text = 'END'
