@@ -46,41 +46,45 @@ export const changeDirection =
   switch (event.key) {
     case "ArrowDown":
       // Faire quelque chose pour la touche "flèche vers le bas" pressée.
-      state.plane.coord.y = state.plane.coord.y + 1
-      //state.plane.coord.dy += 0
-      return state
+      //state.plane.coord.y = state.plane.coord.y + 5
+      state.plane.coord.dy += 5
+      break;
     case "ArrowUp":
       // Faire quelque chose pour la touche "up arrow" pressée.
-      state.plane.coord.y -= 1
-      //state.plane.coord.dy += 0
-      return state
+      //state.plane.coord.y -= 5
+      state.plane.coord.dy -= 5
+      break;
     case "ArrowLeft":
       // Faire quelque chose pour la touche "left arrow" pressée.
-      state.plane.coord.x += 1
-      //state.plane.coord.dx += 10
-      return state
+      //state.plane.coord.x -= 5
+      state.plane.coord.dx -= 5
+      break;
     case "ArrowRight":
       // Faire quelque chose pour la touche "right arrow" pressée.
-      state.plane.coord.x -= 1
-      //state.plane.coord.dx -= 10
-      return state
+      //state.plane.coord.x += 5
+      state.plane.coord.dx += 5
+      break;
+    default:
+      break;
   }
+  return state
   */
-  if (event.key === "ArrowDown") {
+ 
+  if (event.key === 'ArrowDown') {
     // Faire quelque chose pour la touche "flèche vers le bas" pressée.
-    state.plane.coord.y += 10
+    state.plane.coord.dy += 5
   }
-  else if (event.key === "ArrowUp") {
+  else if (event.key === 'ArrowUp') {
     // Faire quelque chose pour la touche "up arrow" pressée.
-    state.plane.coord.y -= 20
+    state.plane.coord.dy -= 5
   }
-  else if (event.key === "ArrowLeft") {
+  else if (event.key === 'ArrowLeft') {
     // Faire quelque chose pour la touche "left arrow" pressée.
-    state.plane.coord.x += 20
+    state.plane.coord.dx -= 5
   }
-  else if (event.key === "ArrowRight") {
+  else if (event.key === 'ArrowRight') {
     // Faire quelque chose pour la touche "right arrow" pressée.
-    state.plane.coord.x -= 20
+    state.plane.coord.dx += 5
   }
   
   return state
