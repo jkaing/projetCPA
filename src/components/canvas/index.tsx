@@ -1,6 +1,6 @@
 import * as conf from './conf'
-import { useRef, useEffect } from 'react'
-import { State, step, click, mouseMove, endOfGame, changeDirection } from './state'
+import React, { useRef, useEffect, useState } from 'react'
+import { State, step, click, mouseMove, endOfGame, changeDirection, moveX, moveY } from './state'
 import { render } from './renderer'
 
 const randomInt = (max: number) => Math.floor(Math.random() * max)
@@ -26,7 +26,7 @@ const Canvas = ({ height, width }: { height: number; width: number }) => {
       },
     },
 
-    pos: new Array(conf.NBBALL).fill(1).map((_) => ({
+    pos: new Array(conf.NBBALL). fill(1).map((_) => ({
       life: conf.BALLLIFE,
       coord: {
         x: randomInt(width - 120) + 60,
@@ -57,21 +57,85 @@ const Canvas = ({ height, width }: { height: number; width: number }) => {
   }
 
   const onPress = (e: KeyboardEvent) => {
+    console.log('press')
     state.current = changeDirection(state.current)(e)
   }
+  /*
+  const moveDown = () => {
+    console.log('moveDown')
+    state.current = moveY(state.current)(-1)
+  }
+  */
+  const useKeyPress = function(targetKey:string) {
+    const [keyPressed, setKeyPressed] = useState(false);
 
+    React.useEffect(() => {
+      const downHandler = ({ key }: { key: string}) => {
+        if (key === targetKey) {
+          setKeyPressed(true);
+        }
+      }
 
+      const upHandler = ({ key }: {key: string}) => {
+        if (key === targetKey) {
+          setKeyPressed(false);
+        }
+      }
+
+      window.addEventListener("keydown", downHandler);
+      window.addEventListener("keyup", upHandler);
+  
+      return () => {
+        window.removeEventListener("keydown", downHandler);
+        window.removeEventListener("keyup", upHandler);
+      };
+    }, [targetKey])
+
+    return keyPressed;
+  };
+  
+  const upPress = useKeyPress("ArrowUp")
+  const downPress = useKeyPress("ArrowDown")
+  const leftPress = useKeyPress("ArrowLeft")
+  const rightPress = useKeyPress("ArrowRight")
+  
+  //const [s, dispatch] = useReducer(reducer, initialState)
+  
+  useEffect(() => {
+    if (downPress) {
+      console.log('downPress')
+      state.current = moveY(state.current)(1)
+    }
+    if (upPress) {
+      console.log('upPress')
+      state.current = moveY(state.current)(-1)
+    }
+    if (leftPress) {
+      console.log('leftPress')
+      state.current = moveX(state.current)(-1)
+    }
+    if (rightPress) {
+      console.log('rightPress')
+      state.current = moveX(state.current)(1)
+    }
+    /*
+    return () => {
+      ref.current.removeEventListener('keydown', moveDown)
+    }
+    */
+  }, [downPress, upPress, leftPress, rightPress])
+  
   useEffect(() => {
     if (ref.current) {
       initCanvas(iterate)(ref.current)
       ref.current.addEventListener('click', onClick)
       ref.current.addEventListener('mousemove', onMove)
-      ref.current.addEventListener('press', onPress)
+      //ref.current.addEventListener('keydown', onPress)
     }
     return () => {
       ref.current.removeEventListener('click', onMove)
       ref.current.removeEventListener('mousemove', onMove)
-      ref.current.removeEventListener('press', onPress)
+      //ref.current.removeEventListener('press', onPress)
     }
   }, [])
   return <canvas {...{ height, width, ref }} />

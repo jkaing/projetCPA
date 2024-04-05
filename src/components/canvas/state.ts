@@ -39,6 +39,22 @@ const iterate = (bound: Size) => (ball: Ball) => {
   }
 }
 
+export const moveX =
+(state: State) =>
+(i:number): State => {
+  state.plane.coord.dx += i*5
+  state.plane.coord.x += i
+  return state
+}
+
+export const moveY =
+(state: State) =>
+(i:number): State => {
+  state.plane.coord.dy += i*5
+  state.plane.coord.y += i
+  return state
+}
+
 export const changeDirection =
 (state: State) =>
 (event: KeyboardEvent): State => {
@@ -73,18 +89,22 @@ export const changeDirection =
   if (event.key === 'ArrowDown') {
     // Faire quelque chose pour la touche "flèche vers le bas" pressée.
     state.plane.coord.dy += 5
+    state.plane.coord.y += 5
   }
   else if (event.key === 'ArrowUp') {
     // Faire quelque chose pour la touche "up arrow" pressée.
     state.plane.coord.dy -= 5
+    state.plane.coord.y -= 5
   }
   else if (event.key === 'ArrowLeft') {
     // Faire quelque chose pour la touche "left arrow" pressée.
     state.plane.coord.dx -= 5
+    state.plane.coord.x -= 5
   }
   else if (event.key === 'ArrowRight') {
     // Faire quelque chose pour la touche "right arrow" pressée.
     state.plane.coord.dx += 5
+    state.plane.coord.x += 5
   }
   
   return state

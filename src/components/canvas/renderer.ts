@@ -41,6 +41,12 @@ const clear = (ctx: CanvasRenderingContext2D) => {
   ctx.fillRect(0, 0, width, height)
 }
 
+const limites = (ctx: CanvasRenderingContext2D) => {
+  const { height, width } = ctx.canvas
+  ctx.strokeRect(0, 0, width, height)
+  ctx.lineWidth = 15;
+} 
+
 const drawCirle = (
   ctx: CanvasRenderingContext2D,
   { x, y }: { x: number; y: number },
@@ -73,6 +79,8 @@ const computeColor = (life: number, maxLife: number, baseColor: string) =>
 
 export const render = (ctx: CanvasRenderingContext2D) => (state: State) => {
   clear(ctx)
+
+  limites(ctx)
 
   state.pos.map((c) =>
     drawCirle(ctx, c.coord, computeColor(c.life, conf.BALLLIFE, COLORS.RED))
