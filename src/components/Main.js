@@ -7,7 +7,6 @@ import ShopPage from './page/shop/Shop';
 
 
 function Main() {
-//    const history = useHistory();
     const[page,setPage]=useState("welcome_page");
     const [isStart, setStart] = useState(false);
  
@@ -29,6 +28,7 @@ function Main() {
         ev.preventDefault();
         setStart(false);
         setPage("shop_page");
+        alert("这里是商品信息！");
         //console.log(page);
         //console.log(isStart);
 
@@ -46,9 +46,13 @@ function Main() {
                     <div className="main">
                         <h1>Welcome to Space Shooter Game!</h1>
                         <div className='different_page'>
+                            <ul>
+                            <li>Use the <span className="key key--arrow">←</span> and <span className="key key--arrow">→</span> keys to move left and right.</li>
+                            <li>Use the <span className="key key--arrow">↑</span> and <span className="key key--arrow">↓</span> keys to move up and down.</li>
+                            </ul>
                             <button onClick={handleStartGame}>Start Game</button>
                             <button onClick={handleShop}>Shop</button>
-                        </div>
+                        </div>                      
                     </div>
                 );
         }
