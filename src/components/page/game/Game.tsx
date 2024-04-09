@@ -7,7 +7,7 @@ type Size = {
   height: number
   width: number
 }
-const App = () => {
+const Game = () => {
   const [size, setSize] = useState<Size | null>(null)
   const container = useRef<any>()
   useEffect(() => {
@@ -25,4 +25,4 @@ const App = () => {
   )
 }
 
-export default App
+export default Game
