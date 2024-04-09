@@ -1,6 +1,6 @@
 import { useRef, useEffect, useState } from 'react'
-import Loader from './components/loader'
-import Canvas from './components/canvas'
+import Loader from './components/page/game/loader'
+import Canvas from './components/page/game/canvas'
 import './App.css'
 
 type Size = {
