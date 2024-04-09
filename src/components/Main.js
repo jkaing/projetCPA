@@ -9,7 +9,7 @@ import ShopPage from './page/shop/Shop';
 function Main() {
     const[page,setPage]=useState("welcome_page");
     const [isStart, setStart] = useState(false);
- 
+
     useEffect(() => {
         console.log("page:", page);
         console.log("isStart:", isStart);
@@ -19,6 +19,11 @@ function Main() {
         ev.preventDefault();
         setStart(true);
         setPage("game_page");
+        const confirmed = window.confirm("Are you sure you want to start the game?");
+        if (!confirmed) {
+        setStart(false);
+        setPage("welcome_page");
+        }
         //console.log(page); // 在页面状态更新之前打印
         //console.log(isStart); // 在isStart状态更新之前打印
       }
@@ -58,7 +63,12 @@ function Main() {
         }
     };
 
-    return renderPage();
+    return (
+        <div>
+          {renderPage()}
+        </div>
+      );
+    
 
 }
 
