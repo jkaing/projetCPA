@@ -1,6 +1,6 @@
 // Game.js
 import React from 'react';
-import './Game.css'; // 导入样式文件
+import './Game1.css'; // 导入样式文件
 
 
 function Game() {

@@ -1,3 +1,11 @@
-.game_page{
-    color:white;
+.Game {
+  text-align: center;
+  height: 100vh;
+  width: 100%;
+  background: #dedede;
+}
+
+body {
+  margin: 0;
+  padding: 0;
 }
