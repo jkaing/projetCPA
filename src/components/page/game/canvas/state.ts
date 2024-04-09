@@ -19,11 +19,11 @@ const iterate = (bound: Size) => (ball: Ball) => {
   const coord = ball.coord
   const dx =
     (coord.x + conf.RADIUS > bound.width || coord.x < conf.RADIUS
-      ? -coord.dx
+      ? 0//-coord.dx
       : coord.dx) * conf.FRICTION
   const dy =
     (coord.y + conf.RADIUS > bound.height || coord.y < conf.RADIUS
-      ? -coord.dy
+      ? 0//-coord.dy
       : coord.dy) * conf.FRICTION
   if (Math.abs(dx) + Math.abs(dy) < conf.MINMOVE)
     return { ...ball, invincible, coord: { ...coord, dx: 0, dy: 0 } }
@@ -31,8 +31,16 @@ const iterate = (bound: Size) => (ball: Ball) => {
     ...ball,
     invincible,
     coord: {
-      x: coord.x + dx,
-      y: coord.y + dy,
+      x: (coord.x + conf.RADIUS > bound.width || coord.x < conf.RADIUS
+        ? (coord.x + conf.RADIUS > bound.width
+          ? bound.width-conf.RADIUS
+          : conf.RADIUS)
+        : coord.x + dx),
+      y: (coord.y + conf.RADIUS > bound.height || coord.x < conf.RADIUS
+        ? (coord.y + conf.RADIUS > bound.height
+          ? bound.height-conf.RADIUS
+          : conf.RADIUS)
+        : coord.y + dy),
       dx,
       dy,
     },
@@ -43,7 +51,11 @@ export const moveX =
 (state: State) =>
 (i:number): State => {
   state.plane.coord.dx += i*5
-  state.plane.coord.x += i
+  state.plane.coord.x += (state.plane.coord.x + conf.RADIUS > state.size.width || state.plane.coord.x < conf.RADIUS
+    ? (state.plane.coord.x + conf.RADIUS > state.size.width
+      ? state.size.width-conf.RADIUS
+      : conf.RADIUS)
+    : i)
   return state
 }
 
@@ -51,7 +63,11 @@ export const moveY =
 (state: State) =>
 (i:number): State => {
   state.plane.coord.dy += i*5
-  state.plane.coord.y += i
+  state.plane.coord.y += (state.plane.coord.y + conf.RADIUS > state.size.height || state.plane.coord.y < conf.RADIUS
+    ? (state.plane.coord.y + conf.RADIUS > state.size.height
+      ? state.size.height-conf.RADIUS
+      : conf.RADIUS)
+    : i)
   return state
 }
 
