@@ -2,6 +2,7 @@ import * as conf from './conf'
 import React, { useRef, useEffect, useState } from 'react'
 import { State, step, click, mouseMove, endOfGame, changeDirection, moveX, moveY } from './state'
 import { render } from './renderer'
+import './Canvas.css'
 
 const randomInt = (max: number) => Math.floor(Math.random() * max)
 const randomSign = () => Math.sign(Math.random() - 0.5)
@@ -138,7 +139,11 @@ const Canvas = ({ height, width }: { height: number; width: number }) => {
       //ref.current.removeEventListener('press', onPress)
     }
   }, [])
-  return <canvas {...{ height, width, ref }} />
+  //<canvas {...{ height, width, ref }} />  
+  return (
+    <div className="canvas-container"> {/* 使用带有背景样式的容器 */}
+      <canvas {...{ height, width, ref }} />
+  </div>)
 }
 
 export default Canvas

@@ -6,13 +6,18 @@ const COLORS = {
   BLUE: '#0000ff',
 }
 
+//将一个十进制数转换为两位的十六进制数, 
+//如果给定的数字小于 16，它将在其前面添加一个零，然后将其转换为十六进制字符串；否则，直接将其转换为十六进制字符串。
 const toDoubleHexa = (n: number) =>
   n < 16 ? '0' + n.toString(16) : n.toString(16)
 
+//给定的颜色字符串转换为带有指定透明度的新的颜色字符串，并返回结果
 export const rgbaTorgb = (rgb: string, alpha = 0) => {
   let r = 0
   let g = 0
   let b = 0
+  //函数首先检查给定的颜色字符串是否以 # 开头，如果是，则将其解析为十六进制的颜色值
+  //它提取红、绿、蓝三个分量的值，并将它们转换为十进制数
   if (rgb.startsWith('#')) {
     const hexR = rgb.length === 7 ? rgb.slice(1, 3) : rgb[1]
     const hexG = rgb.length === 7 ? rgb.slice(3, 5) : rgb[2]
@@ -21,6 +26,7 @@ export const rgbaTorgb = (rgb: string, alpha = 0) => {
     g = parseInt(hexG, 16)
     b = parseInt(hexB, 16)
   }
+  //如果颜色字符串是以 'rgb' 开头的，则将其解析为 RGB 格式，并提取出相应的红、绿、蓝三个分量的值
   if (rgb.startsWith('rgb')) {
     const val = rgb.replace(/(rgb)|\(|\)| /g, '')
     const splitted = val.split(',')
@@ -28,22 +34,31 @@ export const rgbaTorgb = (rgb: string, alpha = 0) => {
     g = parseInt(splitted[1])
     b = parseInt(splitted[2])
   }
-
+  //如果颜色字符串是以 'rgb' 开头的，则将其解析为 RGB 格式，并提取出相应的红、绿、蓝三个分量的值
   r = Math.max(Math.min(Math.floor((1 - alpha) * r + alpha * 255), 255), 0)
   g = Math.max(Math.min(Math.floor((1 - alpha) * g + alpha * 255), 255), 0)
   b = Math.max(Math.min(Math.floor((1 - alpha) * b + alpha * 255), 255), 0)
+
+  //函数将计算得到的新的红、绿、蓝分量的十六进制字符串连接起来，形成新的颜色字符串，并返回结果
   return `#${toDoubleHexa(r)}${toDoubleHexa(g)}${toDoubleHexa(b)}`
 }
 
+//用于清除给定的 Canvas 区域
+//从而实现清除画布的效果。这样就可以将之前绘制的内容清除，以便在之后的绘制操作中重新绘制新的内容。
 const clear = (ctx: CanvasRenderingContext2D) => {
+  // Canvas 的高度和宽度
   const { height, width } = ctx.canvas
-  ctx.fillStyle = 'white'
+  //上下文的填充颜色设置为白色
+  ctx.fillStyle = 'white' //configurer le couleur au fond
+  //fillRect 方法在 Canvas 的整个区域内绘制一个填充了白色的矩形
   ctx.fillRect(0, 0, width, height)
 }
 
+//Canvas 边界的矩形，并设置边界的线宽
 const limites = (ctx: CanvasRenderingContext2D) => {
   const { height, width } = ctx.canvas
   ctx.strokeRect(0, 0, width, height)
+  //定义绘制矩形边界的线宽。
   ctx.lineWidth = 15;
 } 
 
