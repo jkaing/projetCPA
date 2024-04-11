@@ -1,5 +1,5 @@
 .canvas-container {
-    background-image: url('../fond.png');
+    background-image: url('./background.jpg');
     background-size: cover;
     background-repeat: no-repeat;
   }
