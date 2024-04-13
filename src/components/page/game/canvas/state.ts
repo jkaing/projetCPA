@@ -32,8 +32,8 @@ const iterate = (bound: Size) => (ball: Ball) => {
     ...ball,
     invincible,
     coord: {
-      x: (coord.x + conf.RADIUS > bound.width || coord.x <= conf.RADIUS
-        ? (coord.x + conf.RADIUS > bound.width
+      x: (coord.x + conf.RADIUS >= bound.width || coord.x <= conf.RADIUS
+        ? (coord.x + conf.RADIUS >= bound.width
           ? bound.width - conf.RADIUS
           : 1+conf.RADIUS)
         : coord.x + dx),
@@ -197,7 +197,7 @@ export const step = (state: State) => {
   return {
     ...state,
     plane: iterate(state.size)(state.plane),
-    ennemis: state.ennemis.map(iterate(state.size)).filter((p) => p.life > 0),
+    ennemis: state.ennemis.map(iterate(state.size)).filter((p) => p.life > 0).map(iterate(state.size)).filter((p) => p.coord.y < state.size.height - conf.RADIUS),
     pos: state.pos.map(iterate(state.size)).filter((p) => p.life > 0),
   }
 }
