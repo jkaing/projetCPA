@@ -27,6 +27,16 @@ const Canvas = ({ height, width }: { height: number; width: number }) => {
       },
     },
 
+    ennemis: new Array(10). fill(1).map((_) => ({
+      life: conf.BALLLIFE,
+      coord: {
+        x: randomInt(width - 120) + 60,
+        y: 10,
+        dx: 4 * randomSign(),
+        dy: 1,
+      },
+    })),
+
     pos: new Array(conf.NBBALL). fill(1).map((_) => ({
       life: conf.BALLLIFE,
       coord: {

@@ -5,6 +5,7 @@ type Size = { height: number; width: number }
 
 export type State = {
   plane: Ball
+  ennemis: Array<Ball>
 
   pos: Array<Ball>
   size: Size
@@ -18,11 +19,11 @@ const iterate = (bound: Size) => (ball: Ball) => {
   const invincible = ball.invincible ? ball.invincible - 1 : ball.invincible
   const coord = ball.coord
   const dx =
-    (coord.x + conf.RADIUS > bound.width || coord.x < conf.RADIUS
+    (coord.x + conf.RADIUS >= bound.width || coord.x <= conf.RADIUS
       ? 0//-coord.dx
       : coord.dx) * conf.FRICTION
   const dy =
-    (coord.y + conf.RADIUS > bound.height || coord.y < conf.RADIUS
+    (coord.y + conf.RADIUS >= bound.height || coord.y <= conf.RADIUS
       ? 0//-coord.dy
       : coord.dy) * conf.FRICTION
   if (Math.abs(dx) + Math.abs(dy) < conf.MINMOVE)
@@ -31,15 +32,15 @@ const iterate = (bound: Size) => (ball: Ball) => {
     ...ball,
     invincible,
     coord: {
-      x: (coord.x + conf.RADIUS > bound.width || coord.x < conf.RADIUS
+      x: (coord.x + conf.RADIUS > bound.width || coord.x <= conf.RADIUS
         ? (coord.x + conf.RADIUS > bound.width
-          ? bound.width-conf.RADIUS
-          : conf.RADIUS)
+          ? bound.width - conf.RADIUS
+          : 1+conf.RADIUS)
         : coord.x + dx),
-      y: (coord.y + conf.RADIUS > bound.height || coord.x < conf.RADIUS
+      y: (coord.y + conf.RADIUS > bound.height || coord.y <= conf.RADIUS
         ? (coord.y + conf.RADIUS > bound.height
-          ? bound.height-conf.RADIUS
-          : conf.RADIUS)
+          ? bound.height - conf.RADIUS
+          : 1+conf.RADIUS)
         : coord.y + dy),
       dx,
       dy,
@@ -51,11 +52,11 @@ export const moveX =
 (state: State) =>
 (i:number): State => {
   state.plane.coord.dx += i*5
-  state.plane.coord.x += (state.plane.coord.x + conf.RADIUS > state.size.width || state.plane.coord.x < conf.RADIUS
+  state.plane.coord.x = (state.plane.coord.x + conf.RADIUS > state.size.width || state.plane.coord.x <= conf.RADIUS
     ? (state.plane.coord.x + conf.RADIUS > state.size.width
       ? state.size.width-conf.RADIUS
-      : conf.RADIUS)
-    : i)
+      : 1+conf.RADIUS)
+    : state.plane.coord.x + i)
   return state
 }
 
@@ -63,11 +64,11 @@ export const moveY =
 (state: State) =>
 (i:number): State => {
   state.plane.coord.dy += i*5
-  state.plane.coord.y += (state.plane.coord.y + conf.RADIUS > state.size.height || state.plane.coord.y < conf.RADIUS
+  state.plane.coord.y = (state.plane.coord.y + conf.RADIUS > state.size.height || state.plane.coord.y <= conf.RADIUS
     ? (state.plane.coord.y + conf.RADIUS > state.size.height
       ? state.size.height-conf.RADIUS
-      : conf.RADIUS)
-    : i)
+      : 1+conf.RADIUS)
+    : state.plane.coord.y + i)
   return state
 }
 
@@ -196,6 +197,7 @@ export const step = (state: State) => {
   return {
     ...state,
     plane: iterate(state.size)(state.plane),
+    ennemis: state.ennemis.map(iterate(state.size)).filter((p) => p.life > 0),
     pos: state.pos.map(iterate(state.size)).filter((p) => p.life > 0),
   }
 }

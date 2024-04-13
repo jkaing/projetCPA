@@ -129,6 +129,10 @@ export const render = (ctx: CanvasRenderingContext2D) => (state: State) => {
     drawCirle(ctx, c.coord, computeColor(c.life, conf.BALLLIFE, COLORS.RED))
   )
 
+  state.ennemis.map((c) =>
+    drawCirle(ctx, c.coord, computeColor(c.life, conf.BALLLIFE, COLORS.RED))
+  )
+
   //使用 drawCirle 函数绘制了玩家飞机，其位置和颜色也由游戏状态中的信息确定
   drawCirle(ctx, state.plane.coord, computeColor(state.plane.life, conf.BALLLIFE, COLORS.GREEN))
   

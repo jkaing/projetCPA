@@ -13,8 +13,8 @@ const Game = () => {
   useEffect(() => {
     setTimeout(() => {
       setSize({
-        height: container.current.clientHeight,
-        width: container.current.clientWidth,
+        height: 725,//container.current.clientHeight,
+        width: 1250//container.current.clientWidth,
       })
     }, 100)
   })
