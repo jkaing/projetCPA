@@ -1,5 +1,8 @@
 import * as conf from './conf'
 import { State } from './state'
+import playerImage from './avion2.png';
+import backgroundImage from './background.jpg';
+
 const COLORS = {
   RED: '#ff0000',
   GREEN: '#00ff00',
@@ -7,8 +10,7 @@ const COLORS = {
 }
 
 //const backgroundImg = new Image();
-//const backgroundImg = HTMLImageElement;
-//backgroundImg.src = './background.jpg';
+//const backgroundImg = backgroundImage;
 
 
 //将一个十进制数转换为两位的十六进制数, 
@@ -88,6 +90,34 @@ const drawCirle = (
   ctx.fill()
 }
 
+// 加载飞机图像资源
+const planeImg = new Image();
+planeImg.src = playerImage; // 替换为实际的飞机图像路径
+
+// 绘制飞机的函数planeImg.
+const drawPlane = (
+  ctx: CanvasRenderingContext2D, 
+  { x, y }: { x: number; y: number }
+) => {
+  // 确保飞机图像已经加载完成
+  if (planeImg.complete) {
+    const newWidth = 50; // 新的宽度
+    const newHeight = 100; // 新的高度
+    //  ctx.drawImage(planeImg, x, y, planeImg.width, planeImg.height, x, y, newWidth, newHeight);
+    ctx.drawImage(planeImg, x-25, y-50, newWidth, newHeight);
+  } else {
+    // 如果图像还没有加载完成，等待加载完成后再绘制
+    planeImg.onload = () => {
+      const newWidth = 50; // 新的宽度
+      const newHeight = 100; // 新的高度
+    //  ctx.drawImage(planeImg, x, y, planeImg.width, planeImg.height, x, y, newWidth, newHeight);
+    ctx.drawImage(planeImg, x-25, y-50, newWidth, newHeight);
+
+    };
+  }
+};
+
+
 //在 Canvas 上绘制一个三角形
 const drawTriangle = (
   //是一个参数，它指定了绘图操作的上下文，表示将在哪个 Canvas 上进行绘制,是一个参数，它指定了绘图操作的上下文，表示将在哪个 Canvas 上进行绘制
@@ -136,6 +166,8 @@ export const render = (ctx: CanvasRenderingContext2D) => (state: State) => {
   //使用 drawCirle 函数绘制了玩家飞机，其位置和颜色也由游戏状态中的信息确定
   drawCirle(ctx, state.plane.coord, computeColor(state.plane.life, conf.BALLLIFE, COLORS.GREEN))
   
+  drawPlane(ctx, state.plane.coord);
+
   //drawTriangle(ctx, state.plane.coord, computeColor(state.plane.life, conf.BALLLIFE, COLORS.GREEN))
 
   //使用 drawCirle 函数绘制了玩家飞机，其位置和颜色也由游戏状态中的信息确定
