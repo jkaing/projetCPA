@@ -6,6 +6,13 @@ type Ball = { coord: Coord; life: number; invincible?: number }
 //表示画布的尺寸
 type Size = { height: number; width: number }
 
+// 定义子弹对象
+type Bullet = {
+  coord: Coord; // 子弹位置
+  dx: number;   // 子弹水平速度
+  dy: number;   // 子弹垂直速度
+}
+
 //描述游戏的整体状态结构，并确保在代码中使用类型检查来提高代码的可靠性和可维护性。
 export type State = {
   //玩家的飞机
@@ -14,6 +21,10 @@ export type State = {
   ennemis: Array<Ball>
 
   pos: Array<Ball>
+  
+  // 子弹
+  //bullets: Array<Bullet>
+
   //表示画布的尺寸
   size: Size
   //表示游戏是否结束。它是一个布尔值，用于标识游戏是否已经结束
@@ -56,6 +67,7 @@ const iterate = (bound: Size) => (ball: Ball) => {
           ? bound.width - conf.RADIUS
           : 1+conf.RADIUS)
         : coord.x + dx),
+
       y: (coord.y + conf.RADIUS > bound.height || coord.y <= conf.RADIUS
         ? (coord.y + conf.RADIUS > bound.height
           ? bound.height - conf.RADIUS
@@ -67,6 +79,48 @@ const iterate = (bound: Size) => (ball: Ball) => {
   }
 }
 
+//这是一个柯里化的函数,作用是根据球的当前状态，计算并返回球的下一个状态
+const iterate_player = (bound: Size) => (ball: Ball) => {
+  // 递减无敌状态计数器
+  const invincible = ball.invincible ? ball.invincible - 1 : ball.invincible
+  // 保存球的坐标
+  const coord = ball.coord
+  
+  // 计算新的速度（dx 和 dy）,根据边界条件和摩擦系数，如果球碰到边界，则速度将被设置为零
+  const dx =
+    (coord.x + conf.player_Width/2 >= bound.width || coord.x <= conf.player_Width/2
+      ? 0//-coord.dx
+      : coord.dx) * conf.FRICTION
+  const dy =
+    (coord.y + conf.player_Height/2 >= bound.height || coord.y <= conf.player_Height/2
+      ? 0//-coord.dy
+      : coord.dy) * conf.FRICTION
+  // 如果速度太小，球停止移动
+  if (Math.abs(dx) + Math.abs(dy) < conf.MINMOVE)
+    return { ...ball, invincible, coord: { ...coord, dx: 0, dy: 0 } }
+  
+  // 更新球的坐标,返回一个新的球对象，其中包含更新后的坐标和速度
+  return {
+    ...ball,
+    invincible,
+    coord: {
+      x: (coord.x + conf.player_Width/2 >= bound.width || coord.x <= conf.player_Width/2
+        ? (coord.x + conf.player_Width/2 >= bound.width
+          ? bound.width - conf.player_Width/2
+          : 1+conf.player_Width/2)
+        : coord.x + dx),
+      y: (coord.y + conf.player_Height/2 > bound.height || coord.y <= conf.player_Height/2
+        ? (coord.y + conf.player_Height/2 > bound.height
+          ? bound.height - conf.player_Height/2
+          : 1+conf.player_Height/2)
+        : coord.y + dy),
+      dx,
+      dy,
+    },
+  }
+}
+
+
 //调整飞机的水平速度，并根据当前速度更新飞机的水平位置,更新飞机在 x 轴上的位置。
 //这是一个柯里化函数，它接受一个 State 类型的参数 state，然后返回一个函数，该函数接受一个 number 类型的参数 i，并返回一个新的 State 对象
 export const moveX =
@@ -74,10 +128,15 @@ export const moveX =
 (i:number): State => {
   // 根据输入的值调整飞机的水平速度,调整飞机的水平速度。i 的正负值决定了飞机向左还是向右移动，乘以 5 是为了调整速度
   state.plane.coord.dx += i*5
-  state.plane.coord.x = (state.plane.coord.x + conf.RADIUS > state.size.width || state.plane.coord.x <= conf.RADIUS
-    ? (state.plane.coord.x + conf.RADIUS > state.size.width
-      ? state.size.width-conf.RADIUS
-      : 1+conf.RADIUS)
+  // state.plane.coord.x = (state.plane.coord.x + conf.RADIUS > state.size.width || state.plane.coord.x <= conf.RADIUS
+  //   ? (state.plane.coord.x + conf.RADIUS > state.size.width
+  //     ? state.size.width-conf.RADIUS
+  //     : 1+conf.RADIUS)
+  //   : state.plane.coord.x + i)
+  state.plane.coord.x = (state.plane.coord.x + conf.player_Width/2 > state.size.width || state.plane.coord.x <= conf.player_Width/2
+    ? (state.plane.coord.x + conf.player_Width/2 > state.size.width
+      ? state.size.width-conf.player_Width/2
+      : 1+conf.player_Width/2)
     : state.plane.coord.x + i)
   return state
 }
@@ -88,10 +147,10 @@ export const moveY =
 (i:number): State => {
   // 根据输入的值调整飞机的垂直速度
   state.plane.coord.dy += i*5
-  state.plane.coord.y = (state.plane.coord.y + conf.RADIUS > state.size.height || state.plane.coord.y <= conf.RADIUS
-    ? (state.plane.coord.y + conf.RADIUS > state.size.height
-      ? state.size.height-conf.RADIUS
-      : 1+conf.RADIUS)
+  state.plane.coord.y = (state.plane.coord.y + conf.player_Height/2 > state.size.height || state.plane.coord.y <= conf.player_Height/2 
+    ? (state.plane.coord.y + conf.player_Height/2  > state.size.height
+      ? state.size.height-conf.player_Height/2 
+      : 1+conf.player_Height/2 )
     : state.plane.coord.y + i)
   return state
 }
@@ -168,6 +227,7 @@ export const click =
         dist2(p.coord, { x: offsetX, y: offsetY, dx: 0, dy: 0 }) <
         Math.pow(conf.RADIUS, 2) + 100
     )
+
     // 如果找到了目标球体，增加其速度,以模拟点击球体后的效果
     if (target) {
       target.coord.dx += Math.random() * 10
@@ -212,6 +272,7 @@ const collideBoing = (p1: Coord, p2: Coord) => {
 export const step = (state: State) => {
   // 遍历所有的球体，检测是否发生碰撞，并更新球体的生命值和位置
   state.pos.map((p1, i, arr) => {
+//state.ennemis.map((p1, i, arr) => {  
     // 检测当前球体与其他球体之间的碰撞
     arr.slice(i + 1).map((p2) => {
       if (collide(p1.coord, p2.coord)) {
@@ -244,7 +305,7 @@ export const step = (state: State) => {
   // 更新玩家飞机的位置和球体的位置，并移除生命值为 0 的球体
   return {
     ...state,
-    plane: iterate(state.size)(state.plane),
+    plane: iterate_player(state.size)(state.plane),
     ennemis: state.ennemis.map(iterate(state.size)).filter((p) => p.life > 0).map(iterate(state.size)).filter((p) => p.coord.y < state.size.height - conf.RADIUS),
     pos: state.pos.map(iterate(state.size)).filter((p) => p.life > 0),
   }

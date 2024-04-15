@@ -9,6 +9,8 @@ const COLORS = {
   BLUE: '#0000ff',
 }
 
+
+
 //const backgroundImg = new Image();
 //const backgroundImg = backgroundImage;
 
@@ -64,8 +66,6 @@ const clear = (ctx: CanvasRenderingContext2D) => {
 }
 
 
-
-
 //Canvas 边界的矩形，并设置边界的线宽
 const limites = (ctx: CanvasRenderingContext2D) => {
   const { height, width } = ctx.canvas
@@ -101,17 +101,16 @@ const drawPlane = (
 ) => {
   // 确保飞机图像已经加载完成
   if (planeImg.complete) {
-    const newWidth = 50; // 新的宽度
-    const newHeight = 100; // 新的高度
+
     //  ctx.drawImage(planeImg, x, y, planeImg.width, planeImg.height, x, y, newWidth, newHeight);
-    ctx.drawImage(planeImg, x-25, y-50, newWidth, newHeight);
+    ctx.drawImage(planeImg, x-25, y-50, conf.player_Width, conf.player_Height);
   } else {
     // 如果图像还没有加载完成，等待加载完成后再绘制
     planeImg.onload = () => {
       const newWidth = 50; // 新的宽度
       const newHeight = 100; // 新的高度
     //  ctx.drawImage(planeImg, x, y, planeImg.width, planeImg.height, x, y, newWidth, newHeight);
-    ctx.drawImage(planeImg, x-25, y-50, newWidth, newHeight);
+    ctx.drawImage(planeImg, x-25, y-50, conf.player_Width, conf.player_Height);
 
     };
   }
@@ -164,7 +163,7 @@ export const render = (ctx: CanvasRenderingContext2D) => (state: State) => {
   )
 
   //使用 drawCirle 函数绘制了玩家飞机，其位置和颜色也由游戏状态中的信息确定
-  drawCirle(ctx, state.plane.coord, computeColor(state.plane.life, conf.BALLLIFE, COLORS.GREEN))
+  //drawCirle(ctx, state.plane.coord, computeColor(state.plane.life, conf.BALLLIFE, COLORS.GREEN))
   
   drawPlane(ctx, state.plane.coord);
 

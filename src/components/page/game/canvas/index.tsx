@@ -29,7 +29,7 @@ const Canvas = ({ height, width }: { height: number; width: number }) => {
       // 设置玩家飞机的初始位置 
       coord: {
         x: (width - 120)/2 + 60,
-        y: (height - 120)/2 + 60,
+        y: height - 120,
         dx: 0,
         dy: 0,
       },
@@ -163,7 +163,7 @@ const Canvas = ({ height, width }: { height: number; width: number }) => {
       ref.current.removeEventListener('mousemove', onMove)
     }
   }, [])
-  
+
   //<canvas {...{ height, width, ref }} />  
   return (
     <div className="canvas-container"> {/* 使用带有背景样式的容器 */}

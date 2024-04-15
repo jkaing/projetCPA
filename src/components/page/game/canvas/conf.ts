@@ -7,3 +7,6 @@ export const BALLLIFE = 3
 export const PLAYERLIFE = 5
 
 export const NBBALL = 0
+
+export const player_Width = 50; 
+export const player_Height = 100; 
