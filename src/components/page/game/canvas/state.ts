@@ -11,6 +11,8 @@ export type State = {
   //玩家的飞机
   plane: Ball
   //表示游戏中的其他物体的位置,它是一个 Array，其中的每个元素都是一个 Ball 类型的对象
+  ennemis: Array<Ball>
+
   pos: Array<Ball>
   //表示画布的尺寸
   size: Size
@@ -18,7 +20,8 @@ export type State = {
   endOfGame: boolean
 }
 
-//计算两个坐标之间的平方距离
+
+// //计算两个坐标之间的平方距离
 const dist2 = (o1: Coord, o2: Coord) =>
   Math.pow(o1.x - o2.x, 2) + Math.pow(o1.y - o2.y, 2)
 
@@ -31,11 +34,11 @@ const iterate = (bound: Size) => (ball: Ball) => {
   
   // 计算新的速度（dx 和 dy）,根据边界条件和摩擦系数，如果球碰到边界，则速度将被设置为零
   const dx =
-    (coord.x + conf.RADIUS > bound.width || coord.x < conf.RADIUS
+    (coord.x + conf.RADIUS >= bound.width || coord.x <= conf.RADIUS
       ? 0//-coord.dx
       : coord.dx) * conf.FRICTION
   const dy =
-    (coord.y + conf.RADIUS > bound.height || coord.y < conf.RADIUS
+    (coord.y + conf.RADIUS >= bound.height || coord.y <= conf.RADIUS
       ? 0//-coord.dy
       : coord.dy) * conf.FRICTION
 
@@ -48,15 +51,15 @@ const iterate = (bound: Size) => (ball: Ball) => {
     ...ball,
     invincible,
     coord: {
-      x: (coord.x + conf.RADIUS > bound.width || coord.x < conf.RADIUS
-        ? (coord.x + conf.RADIUS > bound.width
-          ? bound.width-conf.RADIUS
-          : conf.RADIUS)
+      x: (coord.x + conf.RADIUS >= bound.width || coord.x <= conf.RADIUS
+        ? (coord.x + conf.RADIUS >= bound.width
+          ? bound.width - conf.RADIUS
+          : 1+conf.RADIUS)
         : coord.x + dx),
-      y: (coord.y + conf.RADIUS > bound.height || coord.x < conf.RADIUS
+      y: (coord.y + conf.RADIUS > bound.height || coord.y <= conf.RADIUS
         ? (coord.y + conf.RADIUS > bound.height
-          ? bound.height-conf.RADIUS
-          : conf.RADIUS)
+          ? bound.height - conf.RADIUS
+          : 1+conf.RADIUS)
         : coord.y + dy),
       dx,
       dy,
@@ -71,15 +74,11 @@ export const moveX =
 (i:number): State => {
   // 根据输入的值调整飞机的水平速度,调整飞机的水平速度。i 的正负值决定了飞机向左还是向右移动，乘以 5 是为了调整速度
   state.plane.coord.dx += i*5
-  // 根据当前速度更新飞机的水平位置,,根据当前速度更新飞机的水平位置。如果飞机碰到了画布的边界，则将其限制在边界内移动。
-  state.plane.coord.x += (state.plane.coord.x + conf.RADIUS > state.size.width || state.plane.coord.x < conf.RADIUS
+  state.plane.coord.x = (state.plane.coord.x + conf.RADIUS > state.size.width || state.plane.coord.x <= conf.RADIUS
     ? (state.plane.coord.x + conf.RADIUS > state.size.width
       ? state.size.width-conf.RADIUS
-      //飞机接近左边界(state.plane.coord.x < conf.RADIUS), 则将飞机的 x 坐标设置为 conf.RADIUS，这样飞机的左边缘正好与画布的左边缘对齐
-      : conf.RADIUS)
-    //飞机不接近边界
-    : i)
-  // 返回更新后的状态
+      : 1+conf.RADIUS)
+    : state.plane.coord.x + i)
   return state
 }
 
@@ -89,16 +88,15 @@ export const moveY =
 (i:number): State => {
   // 根据输入的值调整飞机的垂直速度
   state.plane.coord.dy += i*5
-  // 根据当前速度更新飞机的垂直位置
-  state.plane.coord.y += (state.plane.coord.y + conf.RADIUS > state.size.height || state.plane.coord.y < conf.RADIUS
+  state.plane.coord.y = (state.plane.coord.y + conf.RADIUS > state.size.height || state.plane.coord.y <= conf.RADIUS
     ? (state.plane.coord.y + conf.RADIUS > state.size.height
       ? state.size.height-conf.RADIUS
-      : conf.RADIUS)
-    : i)
-  // 返回更新后的状态
+      : 1+conf.RADIUS)
+    : state.plane.coord.y + i)
   return state
 }
 
+  
 //根据键盘事件来改变飞机的方向
 export const changeDirection =
 (state: State) =>
@@ -129,8 +127,7 @@ export const changeDirection =
       break;
   }
   return state
-  */
-
+  */ 
   // 根据键盘事件的按键来改变飞机的方向
   if (event.key === 'ArrowDown') {
     // Faire quelque chose pour la touche "flèche vers le bas" pressée.
@@ -157,8 +154,8 @@ export const changeDirection =
   }
   
   return state
-  }
- 
+}
+
 //处理鼠标点击事件
 export const click =
   (state: State) =>
@@ -177,7 +174,7 @@ export const click =
       target.coord.dy += Math.random() * 10
     }
     return state
-  }
+}
 
 //用于检测两个物体是否发生了碰撞;物体之间的距离的平方是否小于球体直径的平方
 const collide = (o1: Coord, o2: Coord) =>
@@ -198,7 +195,7 @@ const collideBoing = (p1: Coord, p2: Coord) => {
   const v2n = nx * p2.dx + ny * p2.dy
   const v2g = gx * p2.dx + gy * p2.dy
   const v1n = nx * p1.dx + ny * p1.dy
-  
+ 
   // 计算碰撞后的速度
   p1.dx = nx * v2n + gx * v1g
   p1.dy = ny * v2n + gy * v1g
@@ -248,6 +245,7 @@ export const step = (state: State) => {
   return {
     ...state,
     plane: iterate(state.size)(state.plane),
+    ennemis: state.ennemis.map(iterate(state.size)).filter((p) => p.life > 0).map(iterate(state.size)).filter((p) => p.coord.y < state.size.height - conf.RADIUS),
     pos: state.pos.map(iterate(state.size)).filter((p) => p.life > 0),
   }
 }
@@ -264,3 +262,9 @@ export const endOfGame = (state: State): boolean => true
 //   // 检查玩家的生命值是否耗尽
 //   return state.plane.life <= 0;
 // };
+
+
+
+
+ 
+
