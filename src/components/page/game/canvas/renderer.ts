@@ -2,6 +2,8 @@ import * as conf from './conf'
 import { State } from './state'
 import playerImage from './avion2.png';
 import backgroundImage from './background.jpg';
+import redHeart from './coeur_rouge.png'; // 替换为您的心形图像路径
+import whiteHeart from './coeur_blanc.png'; // 替换为您的心形图像路径
 
 const COLORS = {
   RED: '#ff0000',
@@ -65,14 +67,42 @@ const clear = (ctx: CanvasRenderingContext2D) => {
 
 }
 
-
-//Canvas 边界的矩形，并设置边界的线宽
-const limites = (ctx: CanvasRenderingContext2D) => {
-  const { height, width } = ctx.canvas
-  ctx.strokeRect(0, 0, width, height)
-  //定义绘制矩形边界的线宽。
-  ctx.lineWidth = 15;
+const diplayGameText = (ctx: CanvasRenderingContext2D) => (state: State) => {
+  ctx.font = '96px arial'
+  ctx.strokeText(`life ${state.plane.life}`, 20, 100)
 } 
+
+// //Canvas 边界的矩形，并设置边界的线宽
+// const limites = (ctx: CanvasRenderingContext2D) => {
+//   const { height, width } = ctx.canvas
+//   ctx.strokeRect(0, 0, width, height)
+//   //定义绘制矩形边界的线宽。
+//   ctx.lineWidth = 15;
+// } 
+// Canvas 边界的矩形，并设置两侧边界的线宽
+const limites = (ctx: CanvasRenderingContext2D) => {
+  const { height, width } = ctx.canvas;
+  // 保存默认的线宽
+  const defaultLineWidth = ctx.lineWidth;
+  const defaultStrokeStyle = ctx.strokeStyle;
+  
+  // 设置两侧边界的线宽
+  ctx.lineWidth = 10;
+   ctx.strokeStyle = 'slategray'; 
+  // 绘制左边边界
+  ctx.beginPath();
+  ctx.moveTo(0, 0);
+  ctx.lineTo(0, height);
+  ctx.stroke();
+  // 绘制右边边界
+  ctx.beginPath();
+  ctx.moveTo(width, 0);
+  ctx.lineTo(width, height);
+  ctx.stroke();
+  // 恢复默认的线宽
+  ctx.lineWidth = defaultLineWidth;
+  ctx.strokeStyle = defaultStrokeStyle;
+};
 
 //在 Canvas 上绘制一个圆形
 const drawCirle = (
@@ -107,12 +137,43 @@ const drawPlane = (
   } else {
     // 如果图像还没有加载完成，等待加载完成后再绘制
     planeImg.onload = () => {
-      const newWidth = 50; // 新的宽度
-      const newHeight = 100; // 新的高度
     //  ctx.drawImage(planeImg, x, y, planeImg.width, planeImg.height, x, y, newWidth, newHeight);
     ctx.drawImage(planeImg, x-25, y-50, conf.player_Width, conf.player_Height);
 
     };
+  }
+};
+
+const heartImg = new Image();
+heartImg.src = redHeart; // 替换为您的心形图像路径
+
+const heart_pertImg = new Image();
+heart_pertImg.src = whiteHeart; // 替换为您的心形图像路径
+
+// 在画布上绘制心形图像
+const drawHearts = (ctx: CanvasRenderingContext2D, lives: number) => {
+  console.log("life =", lives);
+  const heartWidth = heartImg.width; // 心形图像的宽度
+  const heartHeight = heartImg.height; // 心形图像的高度
+  const offsetX = ctx.canvas.width -50; // 心形图像绘制的起始 x 坐标
+  const offsetY = 20; // 心形图像绘制的起始 y 坐标
+  const spacing = 10; // 心形图像之间的间距
+  const heartCount = 5; // 总共的心形图案数量
+
+  // 循环绘制生命值图案
+  for (let i = 0; i < heartCount; i++) {
+    const scaledWidth = heartWidth / 8; // 缩小后的宽度
+    const scaledHeight = heartHeight / 8; // 缩小后的高度
+    const scaledOffsetX = offsetX - i * (scaledWidth + spacing); // 缩小后的 x 坐标
+    const scaledOffsetY = offsetY; // 不需要缩小 y 坐标
+    // 如果当前索引小于生命值，则绘制心形图案
+    if (i < lives) {
+      // 绘制心形图案
+      ctx.drawImage(heartImg, scaledOffsetX, scaledOffsetY, scaledWidth, scaledHeight);
+    } else {
+      // 否则，绘制其他图案（例如，团）
+      ctx.drawImage(heart_pertImg, scaledOffsetX, scaledOffsetY, scaledWidth, scaledHeight);
+    }
   }
 };
 
@@ -169,6 +230,8 @@ export const render = (ctx: CanvasRenderingContext2D) => (state: State) => {
 
   //drawTriangle(ctx, state.plane.coord, computeColor(state.plane.life, conf.BALLLIFE, COLORS.GREEN))
 
+  //diplayGameText(ctx)(state)
+  drawHearts(ctx, state.plane.life); // 绘制玩家剩余生命值对应的心形图像
   //使用 drawCirle 函数绘制了玩家飞机，其位置和颜色也由游戏状态中的信息确定
   if (state.endOfGame) {
     const text = 'END'
