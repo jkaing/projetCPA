@@ -44,17 +44,17 @@ const Canvas = ({ height, width }: { height: number; width: number }) => {
         dy: 4 * randomSign() + 5,
       },
     })),
-    pos: new Array(conf.NBBALL). fill(1).map((_) => ({
-      // 设置每个球体的生命值
-      life: conf.BALLLIFE,
-      // 设置每个球体的随机初始位置和速度
-      coord: {
-        x: randomInt(width - 120) + 60,
-        y: randomInt(height - 120) + 60,
-        dx: 4 * randomSign(),
-        dy: 4 * randomSign(),
-      },
-    })),
+    // pos: new Array(conf.NBBALL). fill(1).map((_) => ({
+    //   // 设置每个球体的生命值
+    //   life: conf.BALLLIFE,
+    //   // 设置每个球体的随机初始位置和速度
+    //   coord: {
+    //     x: randomInt(width - 120) + 60,
+    //     y: randomInt(height - 120) + 60,
+    //     dx: 4 * randomSign(),
+    //     dy: 4 * randomSign(),
+    //   },
+    // })),
     // 设置游戏的尺寸
     size: { height, width },
     // 设置游戏的结束状态，默认为 true

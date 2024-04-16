@@ -154,9 +154,9 @@ export const render = (ctx: CanvasRenderingContext2D) => (state: State) => {
   limites(ctx)
 
   //通过 state.pos.map 遍历了游戏中的每个物体，并使用 drawCirle 函数来绘制圆形物体。每个物体的位置和颜色由游戏状态 state 中的信息确定
-  state.pos.map((c) =>
-    drawCirle(ctx, c.coord, computeColor(c.life, conf.BALLLIFE, COLORS.RED))
-  )
+  // state.pos.map((c) =>
+  //   drawCirle(ctx, c.coord, computeColor(c.life, conf.BALLLIFE, COLORS.RED))
+  // )
 
   state.ennemis.map((c) =>
     drawCirle(ctx, c.coord, computeColor(c.life, conf.BALLLIFE, COLORS.RED))

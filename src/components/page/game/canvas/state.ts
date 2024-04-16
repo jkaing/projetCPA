@@ -20,7 +20,7 @@ export type State = {
   //表示游戏中的其他物体的位置,它是一个 Array，其中的每个元素都是一个 Ball 类型的对象
   ennemis: Array<Ball>
 
-  pos: Array<Ball>
+  //pos: Array<Ball>
   
   // 子弹
   //bullets: Array<Bullet>
@@ -222,12 +222,16 @@ export const click =
     // 解构鼠标点击事件的偏移量, 以获取鼠标点击的位置
     const { offsetX, offsetY } = event
     // 在 state.pos 数组中查找与点击位置距离较近的球体,这里使用了 dist2 函数来计算球体与点击位置的距离的平方，并与半径的平方相比较，以判断球体是否在点击范围内。
-    const target = state.pos.find(
+    // const target = state.pos.find(
+    //   (p) =>
+    //     dist2(p.coord, { x: offsetX, y: offsetY, dx: 0, dy: 0 }) <
+    //     Math.pow(conf.RADIUS, 2) + 100
+    // )
+    const target = state.ennemis.find(
       (p) =>
         dist2(p.coord, { x: offsetX, y: offsetY, dx: 0, dy: 0 }) <
         Math.pow(conf.RADIUS, 2) + 100
     )
-
     // 如果找到了目标球体，增加其速度,以模拟点击球体后的效果
     if (target) {
       target.coord.dx += Math.random() * 10
@@ -271,8 +275,8 @@ const collideBoing = (p1: Coord, p2: Coord) => {
 //用于在游戏中执行一步操作
 export const step = (state: State) => {
   // 遍历所有的球体，检测是否发生碰撞，并更新球体的生命值和位置
-  state.pos.map((p1, i, arr) => {
-//state.ennemis.map((p1, i, arr) => {  
+  //state.pos.map((p1, i, arr) => {
+  state.ennemis.map((p1, i, arr) => {  
     // 检测当前球体与其他球体之间的碰撞
     arr.slice(i + 1).map((p2) => {
       if (collide(p1.coord, p2.coord)) {
@@ -307,7 +311,7 @@ export const step = (state: State) => {
     ...state,
     plane: iterate_player(state.size)(state.plane),
     ennemis: state.ennemis.map(iterate(state.size)).filter((p) => p.life > 0).map(iterate(state.size)).filter((p) => p.coord.y < state.size.height - conf.RADIUS),
-    pos: state.pos.map(iterate(state.size)).filter((p) => p.life > 0),
+    //pos: state.pos.map(iterate(state.size)).filter((p) => p.life > 0),
   }
 }
 
