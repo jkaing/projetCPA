@@ -219,6 +219,10 @@ export const render = (ctx: CanvasRenderingContext2D) => (state: State) => {
   //   drawCirle(ctx, c.coord, computeColor(c.life, conf.BALLLIFE, COLORS.RED))
   // )
 
+  state.planeshot.map((c) =>
+    drawCirle(ctx, c.coord, computeColor(c.life, 1, COLORS.BLUE))
+  )
+
   state.ennemis.map((c) =>
     drawCirle(ctx, c.coord, computeColor(c.life, conf.BALLLIFE, COLORS.RED))
   )

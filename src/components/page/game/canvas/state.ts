@@ -17,6 +17,9 @@ type Bullet = {
 export type State = {
   //玩家的飞机
   plane: Ball
+
+  planeshot: Array<Ball>
+
   //表示游戏中的其他物体的位置,它是一个 Array，其中的每个元素都是一个 Ball 类型的对象
   ennemis: Array<Ball>
 
@@ -155,66 +158,6 @@ export const moveY =
   return state
 }
 
-  
-//根据键盘事件来改变飞机的方向
-export const changeDirection =
-(state: State) =>
-(event: KeyboardEvent): State => {
-  /*
-  switch (event.key) {
-    case "ArrowDown":
-      // Faire quelque chose pour la touche "flèche vers le bas" pressée.
-      //state.plane.coord.y = state.plane.coord.y + 5
-      state.plane.coord.dy += 5
-      break;
-    case "ArrowUp":
-      // Faire quelque chose pour la touche "up arrow" pressée.
-      //state.plane.coord.y -= 5
-      state.plane.coord.dy -= 5
-      break;
-    case "ArrowLeft":
-      // Faire quelque chose pour la touche "left arrow" pressée.
-      //state.plane.coord.x -= 5
-      state.plane.coord.dx -= 5
-      break;
-    case "ArrowRight":
-      // Faire quelque chose pour la touche "right arrow" pressée.
-      //state.plane.coord.x += 5
-      state.plane.coord.dx += 5
-      break;
-    default:
-      break;
-  }
-  return state
-  */ 
-  // 根据键盘事件的按键来改变飞机的方向
-  if (event.key === 'ArrowDown') {
-    // Faire quelque chose pour la touche "flèche vers le bas" pressée.
-    state.plane.coord.dy += 5
-    state.plane.coord.y += 5
-  }
-  // 如果按下的是向上箭头键，则向上移动飞机
-  else if (event.key === 'ArrowUp') {
-    // Faire quelque chose pour la touche "up arrow" pressée.
-    state.plane.coord.dy -= 5
-    state.plane.coord.y -= 5
-  }
-  // 如果按下的是向左箭头键，则向左移动飞机
-  else if (event.key === 'ArrowLeft') {
-    // Faire quelque chose pour la touche "left arrow" pressée.
-    state.plane.coord.dx -= 5
-    state.plane.coord.x -= 5
-  }
-  // 如果按下的是向右箭头键，则向右移动飞机
-  else if (event.key === 'ArrowRight') {
-    // Faire quelque chose pour la touche "right arrow" pressée.
-    state.plane.coord.dx += 5
-    state.plane.coord.x += 5
-  }
-  
-  return state
-}
-
 //处理鼠标点击事件
 export const click =
   (state: State) =>
@@ -278,6 +221,7 @@ export const step = (state: State) => {
   //state.pos.map((p1, i, arr) => {
   state.ennemis.map((p1, i, arr) => {  
     // 检测当前球体与其他球体之间的碰撞
+    /*
     arr.slice(i + 1).map((p2) => {
       if (collide(p1.coord, p2.coord)) {
         // 如果发生碰撞，减少球体的生命值并设置无敌状态，然后处理碰撞效果
@@ -289,9 +233,10 @@ export const step = (state: State) => {
           p2.life--
           p2.invincible = 20
         }
-        collideBoing(p1.coord, p2.coord)
+        //collideBoing(p1.coord, p2.coord)
       }
     })
+    */
     // 如果发生碰撞，减少球体的生命值并设置无敌状态，然后处理碰撞效果
     if (collide(state.plane.coord, p1.coord)) {
       // 如果发生碰撞，减少球体和玩家飞机的生命值并设置无敌状态，然后处理碰撞效果
@@ -303,13 +248,14 @@ export const step = (state: State) => {
         state.plane.life--
         state.plane.invincible = 20
       }
-      collideBoing(p1.coord, state.plane.coord)
+      //collideBoing(p1.coord, state.plane.coord)
     }
   })
   // 更新玩家飞机的位置和球体的位置，并移除生命值为 0 的球体
   return {
     ...state,
     plane: iterate_player(state.size)(state.plane),
+    planeshot: state.planeshot.map(iterate(state.size)).filter((p) => p.life > 0).map(iterate(state.size)).filter((p) => p.coord.y > 0),
     ennemis: state.ennemis.map(iterate(state.size)).filter((p) => p.life > 0).map(iterate(state.size)).filter((p) => p.coord.y < state.size.height - conf.RADIUS),
     //pos: state.pos.map(iterate(state.size)).filter((p) => p.life > 0),
   }
