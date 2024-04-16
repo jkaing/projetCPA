@@ -71,7 +71,7 @@ const Canvas = ({ height, width }: { height: number; width: number }) => {
     // 在每一帧中更新游戏状态
     state.current = step(state.current)
     // 判断游戏是否结束
-    state.current.endOfGame = endOfGame(state.current)
+    state.current.endOfGame = !endOfGame(state.current)
     // 渲染游戏画面
     render(ctx)(state.current)
     // 如果游戏未结束，则继续执行游戏循环

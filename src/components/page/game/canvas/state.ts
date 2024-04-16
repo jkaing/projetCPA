@@ -321,7 +321,7 @@ export const mouseMove =
 //export const endOfGame = (state: State): boolean => true
 export const endOfGame = (state: State): boolean => {
   // 检查玩家的生命值是否耗尽
-  return state.plane.life <= 0;
+  return state.plane.life > 0;
 };
 
 
