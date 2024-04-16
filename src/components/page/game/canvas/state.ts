@@ -210,11 +210,27 @@ const collideBoing = (p1: Coord, p2: Coord) => {
   p2.y += p2.dy
 }
 
+const randomInt = (max: number) => Math.floor(Math.random() * max)
+// 用于生成一个随机的正负号 
+const randomSign = () => Math.sign(Math.random() - 0.5)
+
 //用于在游戏中执行一步操作
 export const step = (state: State) => {
+  if (state.ennemis.length<5) {
+    state.ennemis.push(({
+      life: conf.BALLLIFE,
+      coord: {
+        x: randomInt(state.size.width - 120) + 60,
+        y: conf.RADIUS + 1,
+        dx: 0,
+        dy: 4 * randomSign() + 5,
+      },
+    }))
+  }
+
   if (state.planeshot.length<30) {
     state.planeshot.push(({
-      life: conf.BALLLIFE,
+      life: 1,
       coord: {
         x: state.plane.coord.x,
         y: state.plane.coord.y,
@@ -239,7 +255,21 @@ export const step = (state: State) => {
   
   // 遍历所有的球体，检测是否发生碰撞，并更新球体的生命值和位置
   //state.pos.map((p1, i, arr) => {
-  state.ennemis.map((p1, i, arr) => {  
+  state.ennemis.map((p1) => {  
+    state.planeshot.map((p2) => {
+      if (collide(p1.coord, p2.coord)) {
+        // 如果发生碰撞，减少球体的生命值并设置无敌状态，然后处理碰撞效果
+        if (!p1.invincible) {
+          p1.life--
+          p1.invincible = 20
+        }
+        if (!p2.invincible) {
+          p2.life--
+          p2.invincible = 20
+        }
+        //collideBoing(p1.coord, p2.coord)
+      }
+    })
     // 检测当前球体与其他球体之间的碰撞
     /*
     arr.slice(i + 1).map((p2) => {
