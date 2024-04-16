@@ -34,7 +34,7 @@ const Canvas = ({ height, width }: { height: number; width: number }) => {
         dy: 0,
       },
     },
-    planeshot: new Array(20). fill(1).map((_) => ({
+    planeshot: new Array(0)/*. fill(1).map((_) => ({
       life: conf.BALLLIFE,
       coord: {
         x: randomInt(width - 120) + 60,
@@ -42,7 +42,7 @@ const Canvas = ({ height, width }: { height: number; width: number }) => {
         dx: 0,
         dy: -(4 * randomSign() + 5) * 2,
       },
-    })),
+    }))*/,
     // 初始化游戏中的球体数组
     ennemis: new Array(10). fill(1).map((_) => ({
       life: conf.BALLLIFE,

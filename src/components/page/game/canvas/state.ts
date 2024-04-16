@@ -217,6 +217,31 @@ const collideBoing = (p1: Coord, p2: Coord) => {
 
 //用于在游戏中执行一步操作
 export const step = (state: State) => {
+  if (state.planeshot.length<30) {
+    state.planeshot.push(({
+      life: conf.BALLLIFE,
+      coord: {
+        x: state.plane.coord.x,
+        y: state.plane.coord.y,
+        dx: 0,
+        dy: -5,
+      },
+    }))
+  }
+  /*
+  else {
+    //state.planeshot.shift(),
+    state.planeshot.push(({
+      life: conf.BALLLIFE,
+      coord: {
+        x: state.plane.coord.x,
+        y: state.plane.coord.y,
+        dx: 0,
+        dy: -5,
+      },
+    }))
+  }*/
+  
   // 遍历所有的球体，检测是否发生碰撞，并更新球体的生命值和位置
   //state.pos.map((p1, i, arr) => {
   state.ennemis.map((p1, i, arr) => {  
@@ -255,7 +280,7 @@ export const step = (state: State) => {
   return {
     ...state,
     plane: iterate_player(state.size)(state.plane),
-    planeshot: state.planeshot.map(iterate(state.size)).filter((p) => p.life > 0).map(iterate(state.size)).filter((p) => p.coord.y > 0),
+    planeshot: state.planeshot.map(iterate(state.size)).filter((p) => p.life > 0).map(iterate(state.size)).filter((p) => p.coord.y > conf.RADIUS),
     ennemis: state.ennemis.map(iterate(state.size)).filter((p) => p.life > 0).map(iterate(state.size)).filter((p) => p.coord.y < state.size.height - conf.RADIUS),
     //pos: state.pos.map(iterate(state.size)).filter((p) => p.life > 0),
   }

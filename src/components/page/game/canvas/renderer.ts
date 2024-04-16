@@ -74,6 +74,21 @@ const limites = (ctx: CanvasRenderingContext2D) => {
   ctx.lineWidth = 15;
 } 
 
+const drawMunition = (
+  ctx: CanvasRenderingContext2D,
+  { x, y }: { x: number; y: number },
+  color: string
+) => {
+  //开始一条新的路径
+  ctx.beginPath()
+  //设置填充颜色为指定的颜色
+  ctx.fillStyle = color
+  //绘制圆弧路径, (x,y)=centre de circle, 0 和 2 * Math.PI 分别是圆弧的起始角度和结束角度，表示从 0 到 2π 画一个完整的圆
+  ctx.arc(x, y, conf.MUNITION, 0, 2 * Math.PI)
+  //填充路径，绘制圆形
+  ctx.fill()
+}
+
 //在 Canvas 上绘制一个圆形
 const drawCirle = (
   ctx: CanvasRenderingContext2D,
@@ -159,7 +174,7 @@ export const render = (ctx: CanvasRenderingContext2D) => (state: State) => {
   // )
 
   state.planeshot.map((c) =>
-    drawCirle(ctx, c.coord, computeColor(c.life, 1, COLORS.BLUE))
+    drawMunition(ctx, c.coord, computeColor(c.life, 1, COLORS.BLUE))
   )
 
   state.ennemis.map((c) =>
