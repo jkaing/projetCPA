@@ -1,3 +1,4 @@
+import { stat } from 'fs';
 import * as conf from './conf'
 //这定义了一个名为 Coord 的类型，表示游戏中的坐标。它包含 x 和 y 表示位置，以及 dx 和 dy 表示速度。
 type Coord = { x: number; y: number; dx: number; dy: number }
@@ -5,28 +6,22 @@ type Coord = { x: number; y: number; dx: number; dy: number }
 type Ball = { coord: Coord; life: number; invincible?: number }
 //表示画布的尺寸
 type Size = { height: number; width: number }
+type CustomBall = { coord: Coord; life: number; prevLife: number; invincible?: number ; blinkCounter: number }
 
 // 定义子弹对象
-type Bullet = {
-  coord: Coord; // 子弹位置
-  dx: number;   // 子弹水平速度
-  dy: number;   // 子弹垂直速度
-}
+
 
 //描述游戏的整体状态结构，并确保在代码中使用类型检查来提高代码的可靠性和可维护性。
 export type State = {
   //玩家的飞机
-  plane: Ball
-
+  //plane: Ball 
+  plane: CustomBall
   planeshot: Array<Ball>
 
   //表示游戏中的其他物体的位置,它是一个 Array，其中的每个元素都是一个 Ball 类型的对象
   ennemis: Array<Ball>
 
   //pos: Array<Ball>
-  
-  // 子弹
-  //bullets: Array<Bullet>
 
   //表示画布的尺寸
   size: Size
@@ -83,11 +78,11 @@ const iterate = (bound: Size) => (ball: Ball) => {
 }
 
 //这是一个柯里化的函数,作用是根据球的当前状态，计算并返回球的下一个状态
-const iterate_player = (bound: Size) => (ball: Ball) => {
+const iterate_player = (bound: Size) => (plane: CustomBall) => {
   // 递减无敌状态计数器
-  const invincible = ball.invincible ? ball.invincible - 1 : ball.invincible
+  const invincible = plane.invincible ? plane.invincible - 1 : plane.invincible
   // 保存球的坐标
-  const coord = ball.coord
+  const coord = plane.coord
   
   // 计算新的速度（dx 和 dy）,根据边界条件和摩擦系数，如果球碰到边界，则速度将被设置为零
   const dx =
@@ -100,11 +95,11 @@ const iterate_player = (bound: Size) => (ball: Ball) => {
       : coord.dy) * conf.FRICTION
   // 如果速度太小，球停止移动
   if (Math.abs(dx) + Math.abs(dy) < conf.MINMOVE)
-    return { ...ball, invincible, coord: { ...coord, dx: 0, dy: 0 } }
+    return { ...plane, invincible, coord: { ...coord, dx: 0, dy: 0 } }
   
   // 更新球的坐标,返回一个新的球对象，其中包含更新后的坐标和速度
   return {
-    ...ball,
+    ...plane,
     invincible,
     coord: {
       x: (coord.x + conf.player_Width/2 >= bound.width || coord.x <= conf.player_Width/2
@@ -270,6 +265,7 @@ export const step = (state: State) => {
         p1.invincible = 20
       }
       if (!state.plane.invincible) {
+        state.plane.prevLife = state.plane.life
         state.plane.life--
         state.plane.invincible = 20
       }

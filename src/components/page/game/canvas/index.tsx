@@ -26,6 +26,8 @@ const Canvas = ({ height, width }: { height: number; width: number }) => {
     plane: {
       // 设置玩家飞机的生命值
       life: conf.PLAYERLIFE,
+      prevLife: conf.PLAYERLIFE,
+      blinkCounter: 0,
       // 设置玩家飞机的初始位置 
       coord: {
         x: (width - 120)/2 + 60,
@@ -33,6 +35,7 @@ const Canvas = ({ height, width }: { height: number; width: number }) => {
         dx: 0,
         dy: 0,
       },
+    
     },
     planeshot: new Array(0)/*. fill(1).map((_) => ({
       life: conf.BALLLIFE,

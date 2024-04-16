@@ -11,8 +11,6 @@ const COLORS = {
   BLUE: '#0000ff',
 }
 
-
-
 //const backgroundImg = new Image();
 //const backgroundImg = backgroundImage;
 
@@ -67,10 +65,6 @@ const clear = (ctx: CanvasRenderingContext2D) => {
 
 }
 
-const diplayGameText = (ctx: CanvasRenderingContext2D) => (state: State) => {
-  ctx.font = '96px arial'
-  ctx.strokeText(`life ${state.plane.life}`, 20, 100)
-} 
 
 const drawMunition = (
   ctx: CanvasRenderingContext2D,
@@ -166,7 +160,6 @@ heart_pertImg.src = whiteHeart; // 替换为您的心形图像路径
 
 // 在画布上绘制心形图像
 const drawHearts = (ctx: CanvasRenderingContext2D, lives: number) => {
-  console.log("life =", lives);
   const heartWidth = heartImg.width; // 心形图像的宽度
   const heartHeight = heartImg.height; // 心形图像的高度
   const offsetX = ctx.canvas.width -50; // 心形图像绘制的起始 x 坐标
@@ -244,16 +237,36 @@ export const render = (ctx: CanvasRenderingContext2D) => (state: State) => {
   //使用 drawCirle 函数绘制了玩家飞机，其位置和颜色也由游戏状态中的信息确定
   //drawCirle(ctx, state.plane.coord, computeColor(state.plane.life, conf.BALLLIFE, COLORS.GREEN))
   
-  drawPlane(ctx, state.plane.coord);
+  //drawPlane(ctx, state.plane.coord);
+
+  if (state.plane.life !== state.plane.prevLife) {
+    // 检查闪烁状态，如果正在闪烁且闪烁计数器为偶数，则绘制飞机
+    if (state.plane.blinkCounter % 5 === 0) {
+      drawPlane(ctx, state.plane.coord); // 绘制飞机
+    }
+    // 递增闪烁计数器
+    state.plane.blinkCounter++;
+    // 如果闪烁计数器超过闪烁总次数，则重置计数器，并将飞机的 prevLife 更新为当前生命值，并取消闪烁状态
+    if (state.plane.blinkCounter >= conf.BLINK_TOTAL_COUNT) {
+      state.plane.blinkCounter = 0;
+      state.plane.prevLife = state.plane.life;
+    }
+  } else {
+    // 如果生命值未发生变化，则正常绘制飞机
+    drawPlane(ctx, state.plane.coord); // 绘制飞机
+  }
 
   //drawTriangle(ctx, state.plane.coord, computeColor(state.plane.life, conf.BALLLIFE, COLORS.GREEN))
 
   //diplayGameText(ctx)(state)
   drawHearts(ctx, state.plane.life); // 绘制玩家剩余生命值对应的心形图像
+  console.log("life =", state.plane.life);
+  console.log("life precedent =", state.plane.prevLife);
+
   //使用 drawCirle 函数绘制了玩家飞机，其位置和颜色也由游戏状态中的信息确定
   if (state.endOfGame) {
     const text = 'END'
     ctx.font = '48px arial'
     ctx.strokeText(text, state.size.width / 2 - 200, state.size.height / 2)
   }
-}
+}     
