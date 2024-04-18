@@ -28,6 +28,7 @@ const Canvas = ({ height, width }: { height: number; width: number }) => {
       life: conf.PLAYERLIFE,
       prevLife: conf.PLAYERLIFE,
       blinkCounter: 0,
+      shootCounter: 30,
       // 设置玩家飞机的初始位置 
       coord: {
         x: (width - 120)/2 + 60,

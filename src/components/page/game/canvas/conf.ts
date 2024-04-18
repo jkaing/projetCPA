@@ -11,6 +11,6 @@ export const NBBALL = 0
 export const player_Width = 50; 
 export const player_Height = 100; 
 
-export const MUNITION = 5;
+export const MUNITIONRADIUS = 5;
 
 export const BLINK_TOTAL_COUNT=30;
