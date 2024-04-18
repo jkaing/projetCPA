@@ -11,7 +11,8 @@ const COLORS = {
   BLUE: '#0000ff',
   YELLOW: '#fcf55f',
   WHITE: '#ffffff',
-  GREY: '#708090'
+  GREY: '#D3D3D3',
+  MARRON: '#d3b8a5',
 }
 
 //const backgroundImg = new Image();
@@ -238,7 +239,7 @@ export const render = (ctx: CanvasRenderingContext2D) => (state: State) => {
   )
 
   state.ennemis.map((c) =>
-    drawCirle(ctx, c.coord, computeColor(c.life, conf.BALLLIFE, COLORS.RED))
+    drawCirle(ctx, c.coord, computeColor(c.life, conf.BALLLIFE, COLORS.GREY))
   )
 
   //使用 drawCirle 函数绘制了玩家飞机，其位置和颜色也由游戏状态中的信息确定
