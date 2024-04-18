@@ -70,6 +70,9 @@ const Canvas = ({ height, width }: { height: number; width: number }) => {
     // 设置游戏的尺寸
     size: { height, width },
     // 设置游戏的结束状态，默认为 true
+
+    score: 0,
+    
     endOfGame: true,
   }
   

@@ -25,6 +25,9 @@ export type State = {
 
   //表示画布的尺寸
   size: Size
+
+  score: number
+
   //表示游戏是否结束。它是一个布尔值，用于标识游戏是否已经结束
   endOfGame: boolean
 }
@@ -233,7 +236,7 @@ export const step = (state: State) => {
       life: 1,
       coord: {
         x: state.plane.coord.x,
-        y: state.plane.coord.y,
+        y: state.plane.coord.y-conf.player_Height/2+5,
         dx: 0,
         dy: -5,
       },
@@ -262,11 +265,13 @@ export const step = (state: State) => {
         if (!p1.invincible) {
           p1.life--
           p1.invincible = 20
+          state.score +=10
         }
         if (!p2.invincible) {
           p2.life--
           p2.invincible = 20
         }
+        
         //collideBoing(p1.coord, p2.coord)
       }
     })

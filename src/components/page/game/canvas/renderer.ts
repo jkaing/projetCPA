@@ -235,7 +235,7 @@ export const render = (ctx: CanvasRenderingContext2D) => (state: State) => {
   )
 
   //使用 drawCirle 函数绘制了玩家飞机，其位置和颜色也由游戏状态中的信息确定
-  //drawCirle(ctx, state.plane.coord, computeColor(state.plane.life, conf.BALLLIFE, COLORS.GREEN))
+  drawCirle(ctx, state.plane.coord, computeColor(state.plane.life, conf.BALLLIFE, COLORS.GREEN))
   
   //drawPlane(ctx, state.plane.coord);
 
@@ -263,10 +263,16 @@ export const render = (ctx: CanvasRenderingContext2D) => (state: State) => {
   console.log("life =", state.plane.life);
   console.log("life precedent =", state.plane.prevLife);
 
+  // 显示得分
+  ctx.font = '24px Arial';
+  ctx.fillStyle = 'white';
+  ctx.fillText(`Score: ${state.score}`, 20, 40);
+  console.log("score = ",state.score)
   //使用 drawCirle 函数绘制了玩家飞机，其位置和颜色也由游戏状态中的信息确定
   if (state.endOfGame) {
-    const text = 'END'
-    ctx.font = '48px arial'
-    ctx.strokeText(text, state.size.width / 2 - 200, state.size.height / 2)
+    const text = 'END';
+    ctx.font = '48px Arial';
+    ctx.fillStyle = 'red'; // 设置文本颜色为红色
+    ctx.fillText(text, state.size.width / 2 - 80, state.size.height / 2);
   }
 }     
