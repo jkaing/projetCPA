@@ -9,6 +9,9 @@ const COLORS = {
   RED: '#ff0000',
   GREEN: '#00ff00',
   BLUE: '#0000ff',
+  YELLOW: '#fcf55f',
+  WHITE: '#ffffff',
+  GREY: '#708090'
 }
 
 //const backgroundImg = new Image();
@@ -76,7 +79,7 @@ const drawMunition = (
   //设置填充颜色为指定的颜色
   ctx.fillStyle = color
   //绘制圆弧路径, (x,y)=centre de circle, 0 和 2 * Math.PI 分别是圆弧的起始角度和结束角度，表示从 0 到 2π 画一个完整的圆
-  ctx.arc(x, y, conf.MUNITION, 0, 2 * Math.PI)
+  ctx.arc(x, y, conf.MUNITIONRADIUS, 0, 2 * Math.PI)
   //填充路径，绘制圆形
   ctx.fill()
 }
@@ -227,7 +230,7 @@ export const render = (ctx: CanvasRenderingContext2D) => (state: State) => {
   // )
 
   state.planeshot.map((c) =>
-    drawMunition(ctx, c.coord, computeColor(c.life, 1, COLORS.BLUE))
+    drawMunition(ctx, c.coord, computeColor(c.life, 1, COLORS.YELLOW))
   )
 
   state.ennemis.map((c) =>

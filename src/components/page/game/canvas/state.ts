@@ -6,7 +6,7 @@ type Coord = { x: number; y: number; dx: number; dy: number }
 type Ball = { coord: Coord; life: number; invincible?: number }
 //表示画布的尺寸
 type Size = { height: number; width: number }
-type CustomBall = { coord: Coord; life: number; prevLife: number; invincible?: number ; blinkCounter: number }
+type CustomBall = { coord: Coord; life: number; prevLife: number; invincible?: number ; blinkCounter: number ; shootCounter: number }
 
 // 定义子弹对象
 
@@ -231,7 +231,7 @@ export const step = (state: State) => {
     }))
   }
 
-  if (state.planeshot.length<30) {
+  if (state.plane.shootCounter>0) {
     state.planeshot.push(({
       life: 1,
       coord: {
@@ -241,20 +241,13 @@ export const step = (state: State) => {
         dy: -5,
       },
     }))
+    state.plane.shootCounter--
   }
-  /*
-  else {
-    //state.planeshot.shift(),
-    state.planeshot.push(({
-      life: conf.BALLLIFE,
-      coord: {
-        x: state.plane.coord.x,
-        y: state.plane.coord.y,
-        dx: 0,
-        dy: -5,
-      },
-    }))
-  }*/
+  else if (state.plane.shootCounter<-10) {
+    state.plane.shootCounter = 30
+  } else {
+    state.plane.shootCounter--
+  }
   
   // 遍历所有的球体，检测是否发生碰撞，并更新球体的生命值和位置
   //state.pos.map((p1, i, arr) => {
