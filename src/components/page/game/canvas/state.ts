@@ -20,6 +20,7 @@ export type State = {
 
   //表示游戏中的其他物体的位置,它是一个 Array，其中的每个元素都是一个 Ball 类型的对象
   ennemis: Array<Ball>
+  ennemishots: Array<Ball>
 
   //pos: Array<Ball>
 
@@ -121,6 +122,48 @@ const iterate_player = (bound: Size) => (plane: CustomBall) => {
   }
 }
 
+const iterate_munitions = (bound: Size) => (ball: Ball) => {
+  // 递减无敌状态计数器
+  const invincible = ball.invincible ? ball.invincible - 1 : ball.invincible
+  // 保存球的坐标
+  const coord = ball.coord
+  
+  // 计算新的速度（dx 和 dy）,根据边界条件和摩擦系数，如果球碰到边界，则速度将被设置为零
+  const dx =
+    (coord.x + conf.MUNITIONRADIUS >= bound.width || coord.x <= conf.MUNITIONRADIUS
+      ? 0//-coord.dx
+      : coord.dx) * conf.FRICTION
+  const dy =
+    (coord.y + conf.MUNITIONRADIUS >= bound.height || coord.y <= conf.MUNITIONRADIUS
+      ? 0//-coord.dy
+      : coord.dy) * conf.FRICTION
+
+  // 如果速度太小，球停止移动
+  if (Math.abs(dx) + Math.abs(dy) < conf.MINMOVE)
+    return { ...ball, invincible, coord: { ...coord, dx: 0, dy: 0 } }
+  
+  // 更新球的坐标,返回一个新的球对象，其中包含更新后的坐标和速度
+  return {
+    ...ball,
+    invincible,
+    coord: {
+      x: (coord.x + conf.MUNITIONRADIUS >= bound.width || coord.x <= conf.MUNITIONRADIUS
+        ? (coord.x + conf.MUNITIONRADIUS >= bound.width
+          ? bound.width - conf.MUNITIONRADIUS
+          : 1+conf.MUNITIONRADIUS)
+        : coord.x + dx),
+
+      y: (coord.y + conf.MUNITIONRADIUS > bound.height || coord.y <= conf.MUNITIONRADIUS
+        ? (coord.y + conf.MUNITIONRADIUS > bound.height
+          ? bound.height - conf.MUNITIONRADIUS
+          : 1+conf.MUNITIONRADIUS)
+        : coord.y + dy),
+      dx,
+      dy,
+    },
+  }
+}
+
 
 //调整飞机的水平速度，并根据当前速度更新飞机的水平位置,更新飞机在 x 轴上的位置。
 //这是一个柯里化函数，它接受一个 State 类型的参数 state，然后返回一个函数，该函数接受一个 number 类型的参数 i，并返回一个新的 State 对象
@@ -185,6 +228,9 @@ export const click =
 const collide = (o1: Coord, o2: Coord) =>
   dist2(o1, o2) < Math.pow(2 * conf.RADIUS, 2)
 
+const collide_munitions = (o1: Coord, o2: Coord) =>
+  dist2(o1, o2) <= Math.pow(conf.RADIUS + conf.MUNITIONRADIUS, 2)
+
 //处理两个球体之间的碰撞，实现了一种弹力效果
 //实现两个球体之间的碰撞，并根据碰撞后的速度更新球体的位置，从而实现弹力效果。
 const collideBoing = (p1: Coord, p2: Coord) => {
@@ -230,7 +276,7 @@ export const step = (state: State) => {
       },
     }))
   }
-
+  
   if (state.plane.shootCounter>0) {
     state.planeshot.push(({
       life: 1,
@@ -242,23 +288,51 @@ export const step = (state: State) => {
       },
     }))
     state.plane.shootCounter--
-  }
-  else if (state.plane.shootCounter<-10) {
+  } else if (state.plane.shootCounter<-10) {
     state.plane.shootCounter = 30
   } else {
     state.plane.shootCounter--
   }
   
+  state.ennemishots.map((p2) => {
+    if (collide_munitions(state.plane.coord, p2.coord)) {
+      // 如果发生碰撞，减少球体的生命值并设置无敌状态，然后处理碰撞效果
+      if (!state.plane.invincible) {
+        state.plane.life--
+        state.plane.invincible = 20
+        //state.score +=10
+      }
+      if (!p2.invincible) {
+        p2.life--
+        p2.invincible = 20
+      }
+      
+      //collideBoing(p1.coord, p2.coord)
+    }
+  })
+  
   // 遍历所有的球体，检测是否发生碰撞，并更新球体的生命值和位置
   //state.pos.map((p1, i, arr) => {
   state.ennemis.map((p1) => {  
+    if (state.ennemishots.length<1) {
+      state.ennemishots.push(({
+        life: 1,
+        coord: {
+          x: p1.coord.x,
+          y: p1.coord.y,
+          dx: 0,
+          dy: 5,
+        },
+      }))
+    }
+
     state.planeshot.map((p2) => {
-      if (collide(p1.coord, p2.coord)) {
+      if (collide_munitions(p1.coord, p2.coord)) {
         // 如果发生碰撞，减少球体的生命值并设置无敌状态，然后处理碰撞效果
         if (!p1.invincible) {
           p1.life--
           p1.invincible = 20
-          state.score +=10
+          state.score += 10
         }
         if (!p2.invincible) {
           p2.life--
@@ -304,8 +378,9 @@ export const step = (state: State) => {
   return {
     ...state,
     plane: iterate_player(state.size)(state.plane),
-    planeshot: state.planeshot.map(iterate(state.size)).filter((p) => p.life > 0).map(iterate(state.size)).filter((p) => p.coord.y > conf.RADIUS),
+    planeshot: state.planeshot.map(iterate_munitions(state.size)).filter((p) => p.life > 0).map(iterate_munitions(state.size)).filter((p) => p.coord.y > conf.MUNITIONRADIUS),
     ennemis: state.ennemis.map(iterate(state.size)).filter((p) => p.life > 0).map(iterate(state.size)).filter((p) => p.coord.y < state.size.height - conf.RADIUS),
+    ennemishots: state.ennemishots.map(iterate_munitions(state.size)).filter((p) => p.life > 0).map(iterate_munitions(state.size)).filter((p) => p.coord.y < state.size.height - conf.MUNITIONRADIUS),
     //pos: state.pos.map(iterate(state.size)).filter((p) => p.life > 0),
   }
 }

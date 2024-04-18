@@ -57,6 +57,7 @@ const Canvas = ({ height, width }: { height: number; width: number }) => {
         dy: 4 * randomSign() + 5,
       },
     })),
+    ennemishots: new Array(0),
     // pos: new Array(conf.NBBALL). fill(1).map((_) => ({
     //   // 设置每个球体的生命值
     //   life: conf.BALLLIFE,
@@ -171,11 +172,11 @@ const Canvas = ({ height, width }: { height: number; width: number }) => {
   useEffect(() => {
     if (ref.current) {
       initCanvas(iterate)(ref.current)
-      ref.current.addEventListener('click', onClick)
+      //ref.current.addEventListener('click', onClick)
       ref.current.addEventListener('mousemove', onMove)
     }
     return () => {
-      ref.current.removeEventListener('click', onMove)
+      //ref.current.removeEventListener('click', onMove)
       ref.current.removeEventListener('mousemove', onMove)
     }
   }, [])

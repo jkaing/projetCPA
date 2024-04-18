@@ -233,6 +233,10 @@ export const render = (ctx: CanvasRenderingContext2D) => (state: State) => {
     drawMunition(ctx, c.coord, computeColor(c.life, 1, COLORS.YELLOW))
   )
 
+  state.ennemishots.map((c) =>
+    drawMunition(ctx, c.coord, computeColor(c.life, 1, COLORS.RED))
+  )
+
   state.ennemis.map((c) =>
     drawCirle(ctx, c.coord, computeColor(c.life, conf.BALLLIFE, COLORS.RED))
   )
