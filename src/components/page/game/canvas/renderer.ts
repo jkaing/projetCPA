@@ -4,6 +4,7 @@ import playerImage from './avion2.png';
 import backgroundImage from './background.jpg';
 import redHeart from './coeur_rouge.png'; // 替换为您的心形图像路径
 import whiteHeart from './coeur_blanc.png'; // 替换为您的心形图像路径
+import './Window.css'; // 替换为您的心形图像路径
 
 const COLORS = {
   RED: '#ff0000',
@@ -272,10 +273,25 @@ export const render = (ctx: CanvasRenderingContext2D) => (state: State) => {
   ctx.fillText(`Score: ${state.score}`, 20, 40);
   console.log("score = ",state.score)
   //使用 drawCirle 函数绘制了玩家飞机，其位置和颜色也由游戏状态中的信息确定
+  // if (state.endOfGame) {
+  //   const text = 'END';
+  //   ctx.font = '48px Arial';
+  //   ctx.fillStyle = 'red'; // 设置文本颜色为红色
+  //   ctx.fillText(text, state.size.width / 2 - 80, state.size.height / 2);
+  // }
   if (state.endOfGame) {
-    const text = 'END';
-    ctx.font = '48px Arial';
-    ctx.fillStyle = 'red'; // 设置文本颜色为红色
-    ctx.fillText(text, state.size.width / 2 - 80, state.size.height / 2);
+    const text = `Game over! Your score is：${state.score}`;
+        window.alert(text);
+    // 创建一个按钮
+    const returnButton = document.createElement('button');
+    returnButton.textContent = '返回首页';
+    returnButton.onclick = () => {
+      window.location.href = '/'; // 返回首页
+    };
+    // 将按钮添加到弹出窗口中
+    const dialog = document.querySelector('.alert-dialog');
+    dialog?.appendChild(returnButton);
+    // 刷新页面
+    window.location.reload();
   }
 }     

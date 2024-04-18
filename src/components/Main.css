@@ -6,7 +6,7 @@
     color: white; /* 修改文本颜色为白色 */   
 }
 
-.different_page {
+.page {
     display: flex; 
     flex-direction: column;
     align-items: center; /* 按钮居中对齐 */
