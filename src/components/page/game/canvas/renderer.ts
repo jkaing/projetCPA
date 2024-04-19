@@ -1,6 +1,7 @@
 import * as conf from './conf'
 import { State } from './state'
 import playerImage from './avion2.png';
+import ennemisImage from './avion3.png';
 import backgroundImage from './background.jpg';
 import redHeart from './coeur_rouge.png'; // 替换为您的心形图像路径
 import whiteHeart from './coeur_blanc.png'; // 替换为您的心形图像路径
@@ -157,6 +158,54 @@ const drawPlane = (
   }
 };
 
+// 加载飞机图像资源
+const ennemisImg = new Image();
+ennemisImg.src = ennemisImage; // 替换为实际的飞机图像路径
+
+// 绘制飞机的函数planeImg.
+// const drawEnnemis = (
+//   ctx: CanvasRenderingContext2D, 
+//   { x, y }: { x: number; y: number }
+// ) => {
+//   // 确保飞机图像已经加载完成
+//   if (ennemisImg.complete) {
+
+//     //  ctx.drawImage(planeImg, x, y, planeImg.width, planeImg.height, x, y, newWidth, newHeight);
+//     ctx.drawImage(ennemisImg, x-25, y-50, conf.ennemis_Width, conf.ennemis_Height);
+//   } else {
+//     // 如果图像还没有加载完成，等待加载完成后再绘制
+//     planeImg.onload = () => {
+//     //  ctx.drawImage(planeImg, x, y, planeImg.width, planeImg.height, x, y, newWidth, newHeight);
+//     ctx.drawImage(ennemisImg, x-25, y-50, conf.ennemis_Width, conf.ennemis_Height);
+
+//     };
+//   }
+// };
+
+const drawEnnemis = (
+  ctx: CanvasRenderingContext2D, 
+  { x, y }: { x: number; y: number }
+) => {
+  // 确保飞机图像已经加载完成
+  if (ennemisImg.complete) {
+    // 将图像垂直翻转并绘制
+    ctx.save(); // 保存当前的绘图状态
+    ctx.scale(1, -1); // 将y方向的缩放因子设置为-1，实现垂直翻转
+    ctx.drawImage(ennemisImg, x-30, -y-30, conf.ennemis_Width, conf.ennemis_Height); // 绘制翻转后的图像
+    ctx.restore(); // 恢复之前保存的绘图状态
+  } else {
+    // 如果图像还没有加载完成，等待加载完成后再绘制
+    planeImg.onload = () => {
+      // 将图像垂直翻转并绘制
+      ctx.save(); // 保存当前的绘图状态
+      ctx.scale(1, -1); // 将y方向的缩放因子设置为-1，实现垂直翻转
+      ctx.drawImage(ennemisImg, x-30, -y-30, conf.ennemis_Width, conf.ennemis_Height); // 绘制翻转后的图像
+      ctx.restore(); // 恢复之前保存的绘图状态
+    };
+  }
+};
+
+
 const heartImg = new Image();
 heartImg.src = redHeart; // 替换为您的心形图像路径
 
@@ -240,7 +289,8 @@ export const render = (ctx: CanvasRenderingContext2D) => (state: State) => {
   )
 
   state.ennemis.map((c) =>
-    drawCirle(ctx, c.coord, computeColor(c.life, conf.BALLLIFE, COLORS.GREY))
+    //drawCirle(ctx, c.coord, computeColor(c.life, conf.BALLLIFE, COLORS.GREY))
+    drawEnnemis(ctx, c.coord)
   )
 
   //使用 drawCirle 函数绘制了玩家飞机，其位置和颜色也由游戏状态中的信息确定
