@@ -224,6 +224,18 @@ export const click =
     return state
 }
 
+const onCollision = 
+  () => {
+    var filepath=`audio/collision-small.wav`
+    var audio = new Audio();
+    audio.src = filepath;
+    audio.controls = true;
+    audio.autoplay = true;
+    audio.play();
+    console.log("play collision")
+    return;
+  }
+
 //用于检测两个物体是否发生了碰撞;物体之间的距离的平方是否小于球体直径的平方
 const collide = (o1: Coord, o2: Coord) =>
   dist2(o1, o2) < Math.pow(2 * conf.RADIUS, 2)
@@ -370,6 +382,7 @@ export const step = (state: State) => {
         state.plane.prevLife = state.plane.life
         state.plane.life--
         state.plane.invincible = 20
+        onCollision()
       }
       //collideBoing(p1.coord, state.plane.coord)
     }
