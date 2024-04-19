@@ -5,7 +5,6 @@ import ennemisImage from './avion3.png';
 import backgroundImage from './background.jpg';
 import redHeart from './coeur_rouge.png'; // 替换为您的心形图像路径
 import whiteHeart from './coeur_blanc.png'; // 替换为您的心形图像路径
-import './Window.css'; // 替换为您的心形图像路径
 
 const COLORS = {
   RED: '#ff0000',
@@ -336,10 +335,10 @@ export const render = (ctx: CanvasRenderingContext2D) => (state: State) => {
   // }
   if (state.endOfGame) {
     const text = `Game over! Your score is：${state.score}`;
-        window.alert(text);
+    window.alert(text);
     // 创建一个按钮
     const returnButton = document.createElement('button');
-    returnButton.textContent = '返回首页';
+    returnButton.textContent = 'Retour à la page principale';
     returnButton.onclick = () => {
       window.location.href = '/'; // 返回首页
     };
