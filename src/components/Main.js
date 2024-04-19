@@ -62,6 +62,11 @@ function Main() {
 
     return (
         <div>
+            <div className='"audio_fond'>
+                <audio loop autoPlay="true">
+                    <source src={require("./page/game/canvas/audio/musique_fond.ogg")} /*type="audio/mpeg"*/ />
+                </audio>
+            </div>
           {renderPage()}
         </div>
       );
