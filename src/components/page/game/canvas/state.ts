@@ -319,7 +319,7 @@ export const step = (state: State) => {
         life: 1,
         coord: {
           x: p1.coord.x,
-          y: p1.coord.y,
+          y: p1.coord.y+conf.ennemis_Height/2-10,
           dx: 0,
           dy: 5,
         },
