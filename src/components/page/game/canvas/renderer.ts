@@ -289,7 +289,7 @@ export const render = (ctx: CanvasRenderingContext2D) => (state: State) => {
   )
 
   state.ennemis.map((c) =>
-    ::drawCirle(ctx, c.coord, computeColor(c.life, conf.BALLLIFE, COLORS.GREY))
+    //drawCirle(ctx, c.coord, computeColor(c.life, conf.BALLLIFE, COLORS.GREY))
     drawEnnemis(ctx, c.coord)
   )
 
