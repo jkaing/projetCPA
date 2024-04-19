@@ -1,5 +1,8 @@
 import { stat } from 'fs';
 import * as conf from './conf'
+//import collision_audio from './explosion-small.wav';
+
+
 //这定义了一个名为 Coord 的类型，表示游戏中的坐标。它包含 x 和 y 表示位置，以及 dx 和 dy 表示速度。
 type Coord = { x: number; y: number; dx: number; dy: number }
 //这定义了一个名为 Ball 的类型，表示游戏中的球,invincible 表示球是否处于无敌状态（可选)
@@ -226,11 +229,13 @@ export const click =
 
 const onCollision = 
   () => {
-    var filepath=`audio/collision-small.wav`
-    var audio = new Audio();
-    audio.src = filepath;
-    audio.controls = true;
-    audio.autoplay = true;
+    //var filepath=`./audio/explosion-small.wav`
+    // var filepath='audio/powerup.wav'
+    // var audio = new Audio();
+    // audio.src = filepath;
+    // audio.controls = true;
+    // audio.autoplay = true;
+    const audio = new Audio('audio/powerup.wav')
     audio.play();
     console.log("play collision")
     return;
