@@ -333,6 +333,10 @@ export const render = (ctx: CanvasRenderingContext2D) => (state: State) => {
   //   ctx.fillStyle = 'red'; // 设置文本颜色为红色
   //   ctx.fillText(text, state.size.width / 2 - 80, state.size.height / 2);
   // }
+
+  const fin_audio = require("./audio/game_over.wav")
+
+
   if (state.endOfGame) {
     const text = `Game over! Your score is：${state.score}`;
     window.alert(text);

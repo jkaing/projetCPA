@@ -410,12 +410,22 @@ export const mouseMove =
     return state
   }
 
-
+const fin_audio = require("./audio/game_over.wav")
 
 //export const endOfGame = (state: State): boolean => true
 export const endOfGame = (state: State): boolean => {
   // 检查玩家的生命值是否耗尽
-  return state.plane.life > 0;
+  if (state.plane.life > 0){
+    return true;
+  }
+  var filepath=fin_audio
+  var audio = new Audio();
+  audio.src = filepath;
+  audio.controls = true;
+  audio.autoplay = true;
+  //audio.play();
+  return false;
+  
 };
 
 
