@@ -236,8 +236,18 @@ const onCollision =
     audio.src = filepath;
     audio.controls = true;
     audio.autoplay = true;
-    //audio.play();
-    console.log("play collision")
+    return;
+  }
+
+const shotedsound = require("./audio/shot.wav")
+
+const onShoted = 
+  () => {
+    var filepath=shotedsound
+    var audio = new Audio();
+    audio.src = filepath;
+    audio.controls = true;
+    audio.autoplay = true;
     return;
   }
 
@@ -318,6 +328,7 @@ export const step = (state: State) => {
         state.plane.life--
         state.plane.invincible = 20
         //state.score +=10
+        onShoted()
       }
       if (!p2.invincible) {
         p2.life--
