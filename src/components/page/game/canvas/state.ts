@@ -224,14 +224,16 @@ export const click =
     return state
 }
 
+const collisionsound = require("./audio/explosion-small.wav")
+
 const onCollision = 
   () => {
-    var filepath=`audio/collision-small.wav`
+    var filepath=collisionsound
     var audio = new Audio();
     audio.src = filepath;
     audio.controls = true;
     audio.autoplay = true;
-    audio.play();
+    //audio.play();
     console.log("play collision")
     return;
   }
