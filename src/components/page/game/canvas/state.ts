@@ -314,7 +314,7 @@ export const step = (state: State) => {
   // 遍历所有的球体，检测是否发生碰撞，并更新球体的生命值和位置
   //state.pos.map((p1, i, arr) => {
   state.ennemis.map((p1) => {  
-    if (state.ennemishots.length<1) {
+    if (state.ennemishots.length<state.ennemis.length/2 && randomInt(100*state.ennemis.length)===1) {
       state.ennemishots.push(({
         life: 1,
         coord: {
