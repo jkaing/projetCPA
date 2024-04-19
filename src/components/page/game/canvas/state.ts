@@ -227,16 +227,16 @@ export const click =
     return state
 }
 
+const collisionsound = require("./audio/powerup.wav")
+
 const onCollision = 
   () => {
-    //var filepath=`./audio/explosion-small.wav`
-    // var filepath='audio/powerup.wav'
-    // var audio = new Audio();
-    // audio.src = filepath;
-    // audio.controls = true;
-    // audio.autoplay = true;
-    const audio = new Audio('audio/powerup.wav')
-    audio.play();
+    var filepath=collisionsound
+    var audio = new Audio();
+    audio.src = filepath;
+    audio.controls = true;
+    audio.autoplay = true;
+    //audio.play();
     console.log("play collision")
     return;
   }
@@ -409,6 +409,8 @@ export const mouseMove =
   (event: PointerEvent): State => {
     return state
   }
+
+
 
 //export const endOfGame = (state: State): boolean => true
 export const endOfGame = (state: State): boolean => {
