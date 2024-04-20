@@ -251,6 +251,18 @@ const onShoted =
     return;
   }
 
+  const explosionsound = require("./audio/explosion-small.wav")
+
+  const onExplosion = 
+    () => {
+      var filepath=explosionsound
+      var audio = new Audio();
+      audio.src = filepath;
+      audio.controls = true;
+      audio.autoplay = true;
+      return;
+    }
+
 //用于检测两个物体是否发生了碰撞;物体之间的距离的平方是否小于球体直径的平方
 const collide = (o1: Coord, o2: Coord) =>
   dist2(o1, o2) < Math.pow(2 * conf.RADIUS, 2)
@@ -328,7 +340,8 @@ export const step = (state: State) => {
         state.plane.life--
         state.plane.invincible = 20
         //state.score +=10
-        onShoted()
+        //onShoted()
+        onCollision()
       }
       if (!p2.invincible) {
         p2.life--
@@ -361,6 +374,7 @@ export const step = (state: State) => {
           p1.life--
           p1.invincible = 20
           state.score += 10
+          onExplosion()
         }
         if (!p2.invincible) {
           p2.life--
