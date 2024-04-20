@@ -1,6 +1,6 @@
 import * as conf from './conf'
 import React, { useRef, useEffect, useState } from 'react'
-import { State, step, click, mouseMove, endOfGame, moveX, moveY } from './state'
+import { State, step, mouseMove, endOfGame, moveX, moveY } from './state'
 import { render } from './renderer'
 import './Canvas.css'
 
@@ -48,7 +48,7 @@ const Canvas = ({ height, width }: { height: number; width: number }) => {
       },
     }))*/,
     // 初始化游戏中的球体数组
-    ennemis: new Array(10). fill(1).map((_) => ({
+    ennemis: new Array(10).fill(1).map((_) => ({
       life: conf.BALLLIFE,
       coord: {
         x: randomInt(width - 120) + 60,
@@ -94,12 +94,12 @@ const Canvas = ({ height, width }: { height: number; width: number }) => {
     // 如果游戏未结束，则继续执行游戏循环
     if (!state.current.endOfGame) requestAnimationFrame(() => iterate(ctx))
   }
-
+  /*
   // 处理鼠标点击事件
   const onClick = (e: PointerEvent) => {
     state.current = click(state.current)(e)
   }
-
+  */
   // 处理鼠标移动事件
   const onMove = (e: PointerEvent) => {
     state.current = mouseMove(state.current)(e)

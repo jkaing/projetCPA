@@ -237,29 +237,6 @@ const drawHearts = (ctx: CanvasRenderingContext2D, lives: number) => {
   }
 };
 
-
-//在 Canvas 上绘制一个三角形
-const drawTriangle = (
-  //是一个参数，它指定了绘图操作的上下文，表示将在哪个 Canvas 上进行绘制,是一个参数，它指定了绘图操作的上下文，表示将在哪个 Canvas 上进行绘制
-  ctx: CanvasRenderingContext2D,
-  { x, y }: { x: number; y: number },
-  color: string
-  ) => {
-    ctx.beginPath()
-    //将绘图游标移动到指定的坐标 (90, 130) 处
-    ctx.moveTo(90,130)
-    //从当前绘图位置绘制直线到指定的坐标，依次绘制三条边形成一个三角形
-    ctx.lineTo(95,150)
-    ctx.lineTo(150,80)
-    ctx.lineTo(90,130)
-    ctx.fillStyle = color
-    //绘制路径，即绘制三角形的边框
-    ctx.stroke();
-    //ctx.lineWidth = 15;
-    //填充路径，即填充三角形的内部颜色
-    ctx.fill()
-  }
-
 //它的作用是根据生命值 life 和最大生命值 maxLife，以及基础颜色 baseColor 来计算当前生物的颜色
 //生命值越低的生物将更加透明，生命值越高的生物将更加不透明
 const computeColor = (life: number, maxLife: number, baseColor: string) =>
