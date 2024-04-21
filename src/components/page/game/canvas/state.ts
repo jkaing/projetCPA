@@ -292,32 +292,7 @@ export const moveY =
   ]
   return state
 }
-/*
-//处理鼠标点击事件
-export const click =
-  (state: State) =>
-  (event: PointerEvent): State => {
-    // 解构鼠标点击事件的偏移量, 以获取鼠标点击的位置
-    const { offsetX, offsetY } = event
-    // 在 state.pos 数组中查找与点击位置距离较近的球体,这里使用了 dist2 函数来计算球体与点击位置的距离的平方，并与半径的平方相比较，以判断球体是否在点击范围内。
-    // const target = state.pos.find(
-    //   (p) =>
-    //     dist2(p.coord, { x: offsetX, y: offsetY, dx: 0, dy: 0 }) <
-    //     Math.pow(conf.RADIUS, 2) + 100
-    // )
-    const target = state.ennemis.find(
-      (p) =>
-        dist2(p.coord, { x: offsetX, y: offsetY, dx: 0, dy: 0 }) <
-        Math.pow(conf.RADIUS, 2) + 100
-    )
-    // 如果找到了目标球体，增加其速度,以模拟点击球体后的效果
-    if (target) {
-      target.coord.dx += Math.random() * 10
-      target.coord.dy += Math.random() * 10
-    }
-    return state
-}
-*/
+
 const collisionsound = require("./audio/powerup.wav")
 
 const onCollision = 
@@ -355,7 +330,7 @@ const onExplosion =
   }
 
 //用于检测两个物体是否发生了碰撞;物体之间的距离的平方是否小于球体直径的平方
-const collide = (o1: Coord, o2: Coord) =>
+export const collide = (o1: Coord, o2: Coord) =>
   dist2(o1, o2) < Math.pow(2 * conf.RADIUS, 2)
 
 const shapeOverlap_SAT = (p1:Coord[] , p2: Coord[]) =>
@@ -408,35 +383,21 @@ const shapeOverlap_SAT = (p1:Coord[] , p2: Coord[]) =>
 
 const collide_munitions = (o1: Coord, o2: Coord) =>
   dist2(o1, o2) <= Math.pow(conf.RADIUS + conf.MUNITIONRADIUS, 2)
-/*
-//处理两个球体之间的碰撞，实现了一种弹力效果
-//实现两个球体之间的碰撞，并根据碰撞后的速度更新球体的位置，从而实现弹力效果。
-const collideBoing = (p1: Coord, p2: Coord) => {
-  // 计算碰撞的法线向量
-  const nx = (p2.x - p1.x) / (2 * conf.RADIUS)
-  const ny = (p2.y - p1.y) / (2 * conf.RADIUS)
-  // 计算碰撞的切线向量
-  const gx = -ny
-  const gy = nx
 
-  // 计算速度投影
-  const v1g = gx * p1.dx + gy * p1.dy
-  const v2n = nx * p2.dx + ny * p2.dy
-  const v2g = gx * p2.dx + gy * p2.dy
-  const v1n = nx * p1.dx + ny * p1.dy
- 
-  // 计算碰撞后的速度
-  p1.dx = nx * v2n + gx * v1g
-  p1.dy = ny * v2n + gy * v1g
-  p2.dx = nx * v1n + gx * v2g
-  p2.dy = ny * v1n + gy * v2g
-  // 更新球体的位置
-  p1.x += p1.dx
-  p1.y += p1.dy
-  p2.x += p2.dx
-  p2.y += p2.dy
+export const generateEnemyPosition = (existingEnemies: Array<Polygon_ennemis>, width: number, height: number) => {
+  let x: number, y: number;
+  do {
+      x = randomInt(width - 120) + 60;
+      y = conf.ennemis_Height / 2 + 1;
+      const coord: Coord = { x, y, dx: 0, dy: 0 };
+      const isTooClose = existingEnemies.some(enemy => collide(enemy.centre, coord));
+      if (!isTooClose) break;
+  } while (true);
+  return { x, y };
 }
-*/
+
+
+
 const randomInt = (max: number) => Math.floor(Math.random() * max)
 // 用于生成一个随机的正负号 
 const randomSign = () => Math.sign(Math.random() - 0.5)
@@ -444,8 +405,9 @@ const randomSign = () => Math.sign(Math.random() - 0.5)
 //用于在游戏中执行一步操作
 export const step = (state: State) => {
   if (state.ennemis.length<5) {
-    const x = randomInt(state.size.width - 120) + 60
-    const y = conf.ennemis_Height/2 + 1
+    // const x = randomInt(state.size.width - 120) + 60
+    // const y = conf.ennemis_Height/2 + 1
+    const { x, y } = generateEnemyPosition(state.ennemis, state.size.width, state.size.height);
     const dy = 4 * randomSign() + 5
     state.ennemis.push(({
       life: conf.BALLLIFE,

@@ -16,8 +16,6 @@ const COLORS = {
   MARRON: '#d3b8a5',
 }
 
-//const backgroundImg = new Image();
-//const backgroundImg = backgroundImage;
 
 
 //将一个十进制数转换为两位的十六进制数, 
@@ -128,7 +126,7 @@ const drawCirle = (
   //设置填充颜色为指定的颜色
   ctx.fillStyle = color
   //绘制圆弧路径, (x,y)=centre de circle, 0 和 2 * Math.PI 分别是圆弧的起始角度和结束角度，表示从 0 到 2π 画一个完整的圆
-  ctx.arc(x, y-50, conf.RADIUS, 0, 2 * Math.PI)
+  ctx.arc(x, y, conf.RADIUS, 0, 2 * Math.PI)
   //填充路径，绘制圆形
   ctx.fill()
 }
@@ -248,14 +246,16 @@ export const render = (ctx: CanvasRenderingContext2D) => (state: State) => {
     // drawEnnemis(ctx, c.coord)
     drawEnnemis(ctx, c.centre)
   )
+
   // state.ennemis.map((c) =>
-  //   //drawCirle(ctx, c.coord, computeColor(c.life, conf.BALLLIFE, COLORS.GREY))
-  // drawCirle(ctx, c.coord, computeColor(state.plane.life, conf.BALLLIFE, COLORS.RED))
+  //   drawCirle(ctx, c.centre, computeColor(c.life, conf.BALLLIFE, COLORS.GREY))
+  //   //drawEnnemis(ctx, c.centre)
   // )
 
+  
+
   //使用 drawCirle 函数绘制了玩家飞机，其位置和颜色也由游戏状态中的信息确定
-  //drawCirle(ctx, state.plane.coord, computeColor(state.plane.life, conf.BALLLIFE, COLORS.GREEN))
-  drawCirle(ctx, state.plane.centre, computeColor(state.plane.life, conf.BALLLIFE, COLORS.GREEN))
+  //drawCirle(ctx, state.plane.centre, computeColor(state.plane.life, conf.BALLLIFE, COLORS.GREEN))
 
   //drawPlane(ctx, state.plane.coord);
 
