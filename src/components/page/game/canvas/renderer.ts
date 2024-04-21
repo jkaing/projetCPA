@@ -1,8 +1,7 @@
 import * as conf from './conf'
 import { State } from './state'
-import playerImage from './avion2.png';
-import ennemisImage from './avion3.png';
-import backgroundImage from './background.jpg';
+import playerImage from './player.png';
+import ennemisImage from './ennemis.png';
 import redHeart from './coeur_rouge.png'; // 替换为您的心形图像路径
 import whiteHeart from './coeur_blanc.png'; // 替换为您的心形图像路径
 
