@@ -550,7 +550,8 @@ export const step = (state: State) => {
     })
     */
     // 如果发生碰撞，减少球体的生命值并设置无敌状态，然后处理碰撞效果
-    if (collide(state.plane.centre, p1.centre)) {
+    //if (collide(state.plane.centre, p1.centre)) { 
+    if (shapeOverlap_SAT(state.plane.points, p1.points)) {
       // 如果发生碰撞，减少球体和玩家飞机的生命值并设置无敌状态，然后处理碰撞效果
       if (!p1.invincible) {
         p1.life--
