@@ -253,17 +253,17 @@ const onShoted =
     return;
   }
 
-  const explosionsound = require("./audio/explosion-small.wav")
+const explosionsound = require("./audio/explosion-small.wav")
 
-  const onExplosion = 
-    () => {
-      var filepath=explosionsound
-      var audio = new Audio();
-      audio.src = filepath;
-      audio.controls = true;
-      audio.autoplay = true;
-      return;
-    }
+const onExplosion = 
+  () => {
+    var filepath=explosionsound
+    var audio = new Audio();
+    audio.src = filepath;
+    audio.controls = true;
+    audio.autoplay = true;
+    return;
+  }
 
 //用于检测两个物体是否发生了碰撞;物体之间的距离的平方是否小于球体直径的平方
 const collide = (o1: Coord, o2: Coord) =>
@@ -271,7 +271,7 @@ const collide = (o1: Coord, o2: Coord) =>
 
 const collide_munitions = (o1: Coord, o2: Coord) =>
   dist2(o1, o2) <= Math.pow(conf.RADIUS + conf.MUNITIONRADIUS, 2)
-
+/*
 //处理两个球体之间的碰撞，实现了一种弹力效果
 //实现两个球体之间的碰撞，并根据碰撞后的速度更新球体的位置，从而实现弹力效果。
 const collideBoing = (p1: Coord, p2: Coord) => {
@@ -299,7 +299,7 @@ const collideBoing = (p1: Coord, p2: Coord) => {
   p2.x += p2.dx
   p2.y += p2.dy
 }
-
+*/
 const randomInt = (max: number) => Math.floor(Math.random() * max)
 // 用于生成一个随机的正负号 
 const randomSign = () => Math.sign(Math.random() - 0.5)
