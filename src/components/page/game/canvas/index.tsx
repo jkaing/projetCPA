@@ -88,7 +88,7 @@ const Canvas = ({ height, width }: { height: number; width: number }) => {
     // })),
     ennemis: new Array(10).fill(1).map((_) => {
       const centreX = randomInt(width - 120) + 60;
-      const centreY = conf.RADIUS + 1;
+      const centreY = conf.ennemis_Height/2 + 1;
       return {
           life: conf.BALLLIFE,
           centre: {

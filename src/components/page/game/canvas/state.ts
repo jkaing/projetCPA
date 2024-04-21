@@ -570,7 +570,7 @@ export const step = (state: State) => {
     ...state,
     plane: iterate_player(state.size)(state.plane),
     planeshot: state.planeshot.map(iterate_munitions(state.size)).filter((p) => p.life > 0).map(iterate_munitions(state.size)).filter((p) => p.coord.y > conf.MUNITIONRADIUS),
-    ennemis: state.ennemis.map(iterate_ennemis(state.size)).filter((p) => p.life > 0).map(iterate_ennemis(state.size)).filter((p) => p.centre.y < state.size.height - conf.RADIUS),
+    ennemis: state.ennemis.map(iterate_ennemis(state.size)).filter((p) => p.life > 0).map(iterate_ennemis(state.size)).filter((p) => p.centre.y < state.size.height - conf.ennemis_Height/2),
     ennemishots: state.ennemishots.map(iterate_munitions(state.size)).filter((p) => p.life > 0).map(iterate_munitions(state.size)).filter((p) => p.coord.y < state.size.height - conf.MUNITIONRADIUS),
     //pos: state.pos.map(iterate(state.size)).filter((p) => p.life > 0),
   }
