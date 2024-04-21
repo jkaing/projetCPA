@@ -140,6 +140,57 @@ const iterate_player = (bound: Size) => (plane: Polygon_plane) => {
   }
 }
 
+const iterate_ennemis = (bound: Size) => (ennemi: Polygon_ennemis) => {
+  // 递减无敌状态计数器
+  const invincible = ennemi.invincible ? ennemi.invincible - 1 : ennemi.invincible
+  // 保存球的坐标
+  const coord = ennemi.centre
+  
+  // 计算新的速度（dx 和 dy）,根据边界条件和摩擦系数，如果球碰到边界，则速度将被设置为零
+  const dx =
+    (coord.x + conf.RADIUS >= bound.width || coord.x <= conf.RADIUS
+      ? 0//-coord.dx
+      : coord.dx) * conf.FRICTION
+  const dy =
+    (coord.y + conf.RADIUS >= bound.height || coord.y <= conf.RADIUS
+      ? 0//-coord.dy
+      : coord.dy) * conf.FRICTION
+
+  // 如果速度太小，球停止移动
+  if (Math.abs(dx) + Math.abs(dy) < conf.MINMOVE)
+    return { ...ennemi, invincible, coord: { ...coord, dx: 0, dy: 0 } }
+
+  const x = coord.x
+  const y = coord.y
+  
+  // 更新球的坐标,返回一个新的球对象，其中包含更新后的坐标和速度
+  return {
+    ...ennemi,
+    invincible,
+    coord: {
+      x: (coord.x + conf.RADIUS >= bound.width || coord.x <= conf.RADIUS
+        ? (coord.x + conf.RADIUS >= bound.width
+          ? bound.width - conf.RADIUS
+          : 1+conf.RADIUS)
+        : coord.x + dx),
+
+      y: (coord.y + conf.RADIUS > bound.height || coord.y <= conf.RADIUS
+        ? (coord.y + conf.RADIUS > bound.height
+          ? bound.height - conf.RADIUS
+          : 1+conf.RADIUS)
+        : coord.y + dy),
+      dx,
+      dy,
+    },
+    points: [
+      { x: x+5, y: y+25, dx, dy },
+      { x: x+25, y: y-25, dx, dy },
+      { x: x-25, y: y-25, dx, dy },
+      { x: x-5, y: y+25, dx, dy },
+    ],
+  }
+}
+
 const iterate_munitions = (bound: Size) => (ball: Ball) => {
   // 递减无敌状态计数器
   const invincible = ball.invincible ? ball.invincible - 1 : ball.invincible
@@ -223,7 +274,7 @@ export const moveY =
     : state.plane.centre.y + i)
   return state
 }
-
+/*
 //处理鼠标点击事件
 export const click =
   (state: State) =>
@@ -248,7 +299,7 @@ export const click =
     }
     return state
 }
-
+*/
 const collisionsound = require("./audio/powerup.wav")
 
 const onCollision = 
@@ -375,14 +426,23 @@ const randomSign = () => Math.sign(Math.random() - 0.5)
 //用于在游戏中执行一步操作
 export const step = (state: State) => {
   if (state.ennemis.length<5) {
+    const x = randomInt(state.size.width - 120) + 60
+    const y = conf.RADIUS + 1
+    const dy = 4 * randomSign() + 5
     state.ennemis.push(({
       life: conf.BALLLIFE,
-      coord: {
-        x: randomInt(state.size.width - 120) + 60,
-        y: conf.RADIUS + 1,
+      centre: {
+        x: x,
+        y: y,
         dx: 0,
-        dy: 4 * randomSign() + 5,
+        dy: dy,
       },
+      points: [
+        { x: x+5, y: y+25, dx: 0, dy },
+        { x: x+25, y: y-25, dx: 0, dy },
+        { x: x-25, y: y-25, dx: 0, dy },
+        { x: x-5, y: y+25, dx: 0, dy },
+      ],
     }))
   }
   
@@ -390,8 +450,8 @@ export const step = (state: State) => {
     state.planeshot.push(({
       life: 1,
       coord: {
-        x: state.plane.coord.x,
-        y: state.plane.coord.y-conf.player_Height/2+5,
+        x: state.plane.centre.x,
+        y: state.plane.centre.y-conf.player_Height/2+5,
         dx: 0,
         dy: -5,
       },
@@ -404,7 +464,7 @@ export const step = (state: State) => {
   }
   
   state.ennemishots.map((p2) => {
-    if (collide_munitions(state.plane.coord, p2.coord)) {
+    if (collide_munitions(state.plane.centre, p2.coord)) {
       // 如果发生碰撞，减少球体的生命值并设置无敌状态，然后处理碰撞效果
       if (!state.plane.invincible) {
         state.plane.life--
@@ -429,8 +489,8 @@ export const step = (state: State) => {
       state.ennemishots.push(({
         life: 1,
         coord: {
-          x: p1.coord.x,
-          y: p1.coord.y+conf.ennemis_Height/2-10,
+          x: p1.centre.x,
+          y: p1.centre.y+conf.ennemis_Height/2-10,
           dx: 0,
           dy: 5,
         },
@@ -438,7 +498,7 @@ export const step = (state: State) => {
     }
 
     state.planeshot.map((p2) => {
-      if (collide_munitions(p1.coord, p2.coord)) {
+      if (collide_munitions(p1.centre, p2.coord)) {
         // 如果发生碰撞，减少球体的生命值并设置无敌状态，然后处理碰撞效果
         if (!p1.invincible) {
           p1.life--
@@ -472,7 +532,7 @@ export const step = (state: State) => {
     })
     */
     // 如果发生碰撞，减少球体的生命值并设置无敌状态，然后处理碰撞效果
-    if (collide(state.plane.coord, p1.coord)) {
+    if (collide(state.plane.centre, p1.centre)) {
       // 如果发生碰撞，减少球体和玩家飞机的生命值并设置无敌状态，然后处理碰撞效果
       if (!p1.invincible) {
         p1.life--
@@ -492,7 +552,7 @@ export const step = (state: State) => {
     ...state,
     plane: iterate_player(state.size)(state.plane),
     planeshot: state.planeshot.map(iterate_munitions(state.size)).filter((p) => p.life > 0).map(iterate_munitions(state.size)).filter((p) => p.coord.y > conf.MUNITIONRADIUS),
-    ennemis: state.ennemis.map(iterate(state.size)).filter((p) => p.life > 0).map(iterate(state.size)).filter((p) => p.coord.y < state.size.height - conf.RADIUS),
+    ennemis: state.ennemis.map(iterate_ennemis(state.size)).filter((p) => p.life > 0).map(iterate_ennemis(state.size)).filter((p) => p.coord.y < state.size.height - conf.RADIUS),
     ennemishots: state.ennemishots.map(iterate_munitions(state.size)).filter((p) => p.life > 0).map(iterate_munitions(state.size)).filter((p) => p.coord.y < state.size.height - conf.MUNITIONRADIUS),
     //pos: state.pos.map(iterate(state.size)).filter((p) => p.life > 0),
   }
