@@ -11,9 +11,9 @@ type Ball = { coord: Coord; life: number; invincible?: number }
 type Size = { height: number; width: number }
 type CustomBall = { coord: Coord; life: number; prevLife: number; invincible?: number ; blinkCounter: number ; shootCounter: number }
 
-type polygon_plane = {points: Coord[]; centre: Coord; original:Coord[]; life: number; prevLife: number; invincible?: number ; blinkCounter: number ; shootCounter: number }  
+type Polygon_plane = {points: Coord[]; centre: Coord; original:Coord[]; life: number; prevLife: number; invincible?: number ; blinkCounter: number ; shootCounter: number }  
 
-type polygon_ennemis = {points: Coord[]; centre: Coord;  life: number; invincible?: number ; shootCounter: number }  
+type Polygon_ennemis = {points: Coord[]; centre: Coord;  life: number; invincible?: number }  
 
 
 //描述游戏的整体状态结构，并确保在代码中使用类型检查来提高代码的可靠性和可维护性。
@@ -27,7 +27,6 @@ export type State = {
   ennemis: Array<Ball>
   ennemishots: Array<Ball>
 
-  //pos: Array<Ball>
 
   //表示画布的尺寸
   size: Size
@@ -268,6 +267,54 @@ const onExplosion =
 //用于检测两个物体是否发生了碰撞;物体之间的距离的平方是否小于球体直径的平方
 const collide = (o1: Coord, o2: Coord) =>
   dist2(o1, o2) < Math.pow(2 * conf.RADIUS, 2)
+
+const shapeOverlap_SAT = (p1:Coord[] , p2: Coord[]) =>
+	{
+		let poly1 = p1;
+		let poly2 = p2;
+
+		for (let shape = 0; shape < 2; shape++)
+		{
+			if (shape === 1)
+			{
+				poly1 = p2;
+				poly2 = p1;
+			}
+		
+			for (let a = 0; a < poly1.length ; a++)
+			{
+				const b = (a + 1) % poly1.length;
+				const axisProj = { x:-(poly1[b].y - poly1[a].y), y: poly1[b].x - poly1[a].x};
+				const d = Math.sqrt(axisProj.x * axisProj.x + axisProj.y * axisProj.y);
+				//axisProj = { axisProj.x / d, axisProj.y / d };
+        axisProj.x /= d;
+        axisProj.y /= d;
+
+				// Work out min and max 1D points for r1
+				let min_p1 = Infinity, max_p1 = -Infinity;
+				for (let p = 0; p < poly1.length; p++)
+				{
+					const q = (poly1[p].x * axisProj.x + poly1[p].y * axisProj.y);
+					min_p1 = Math.min(min_p1, q);
+					max_p1 = Math.max(max_p1, q);
+				}
+
+				// Work out min and max 1D points for r2
+				let min_p2 = Infinity, max_p2 = -Infinity;
+				for (let p = 0; p < poly2.length; p++)
+				{
+					const q = (poly2[p].x * axisProj.x + poly2[p].y * axisProj.y);
+					min_p2 = Math.min(min_p2, q);
+					max_p2 = Math.max(max_p2, q);
+				}
+
+				if (!(max_p2 >= min_p1 && max_p1 >= min_p2))
+					return false;
+			}
+		}
+
+		return true;
+	} 
 
 const collide_munitions = (o1: Coord, o2: Coord) =>
   dist2(o1, o2) <= Math.pow(conf.RADIUS + conf.MUNITIONRADIUS, 2)

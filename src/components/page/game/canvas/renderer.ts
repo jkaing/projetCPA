@@ -147,6 +147,8 @@ const drawPlane = (
 
     //  ctx.drawImage(planeImg, x, y, planeImg.width, planeImg.height, x, y, newWidth, newHeight);
     ctx.drawImage(planeImg, x-25, y-50, conf.player_Width, conf.player_Height);
+    //console.log("coord (" ,x, "," , y, ")")
+    //console.log("centre de plane (" ,x-25, "," , y-50, ")")
   } else {
     // 如果图像还没有加载完成，等待加载完成后再绘制
     planeImg.onload = () => {
@@ -160,26 +162,6 @@ const drawPlane = (
 // 加载飞机图像资源
 const ennemisImg = new Image();
 ennemisImg.src = ennemisImage; // 替换为实际的飞机图像路径
-
-// 绘制飞机的函数planeImg.
-// const drawEnnemis = (
-//   ctx: CanvasRenderingContext2D, 
-//   { x, y }: { x: number; y: number }
-// ) => {
-//   // 确保飞机图像已经加载完成
-//   if (ennemisImg.complete) {
-
-//     //  ctx.drawImage(planeImg, x, y, planeImg.width, planeImg.height, x, y, newWidth, newHeight);
-//     ctx.drawImage(ennemisImg, x-25, y-50, conf.ennemis_Width, conf.ennemis_Height);
-//   } else {
-//     // 如果图像还没有加载完成，等待加载完成后再绘制
-//     planeImg.onload = () => {
-//     //  ctx.drawImage(planeImg, x, y, planeImg.width, planeImg.height, x, y, newWidth, newHeight);
-//     ctx.drawImage(ennemisImg, x-25, y-50, conf.ennemis_Width, conf.ennemis_Height);
-
-//     };
-//   }
-// };
 
 const drawEnnemis = (
   ctx: CanvasRenderingContext2D, 
@@ -268,9 +250,13 @@ export const render = (ctx: CanvasRenderingContext2D) => (state: State) => {
     //drawCirle(ctx, c.coord, computeColor(c.life, conf.BALLLIFE, COLORS.GREY))
     drawEnnemis(ctx, c.coord)
   )
+  state.ennemis.map((c) =>
+    //drawCirle(ctx, c.coord, computeColor(c.life, conf.BALLLIFE, COLORS.GREY))
+  drawCirle(ctx, c.coord, computeColor(state.plane.life, conf.BALLLIFE, COLORS.RED))
+  )
 
   //使用 drawCirle 函数绘制了玩家飞机，其位置和颜色也由游戏状态中的信息确定
-  drawCirle(ctx, state.plane.coord, computeColor(state.plane.life, conf.BALLLIFE, COLORS.GREEN))
+  //drawCirle(ctx, state.plane.coord, computeColor(state.plane.life, conf.BALLLIFE, COLORS.GREEN))
   
   //drawPlane(ctx, state.plane.coord);
 
