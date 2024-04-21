@@ -11,7 +11,7 @@ type Ball = { coord: Coord; life: number; invincible?: number }
 type Size = { height: number; width: number }
 type CustomBall = { coord: Coord; life: number; prevLife: number; invincible?: number ; blinkCounter: number ; shootCounter: number }
 
-type Polygon_plane = {points: Coord[]; centre: Coord; original:Coord[]; life: number; prevLife: number; invincible?: number ; blinkCounter: number ; shootCounter: number }  
+type Polygon_plane = {points: Coord[]; centre: Coord; life: number; prevLife: number; invincible?: number ; blinkCounter: number ; shootCounter: number }  
 
 type Polygon_ennemis = {points: Coord[]; centre: Coord;  life: number; invincible?: number }  
 
@@ -20,11 +20,14 @@ type Polygon_ennemis = {points: Coord[]; centre: Coord;  life: number; invincibl
 export type State = {
   //玩家的飞机
   //plane: Ball 
-  plane: CustomBall
+  //plane: CustomBall
+  plane: Polygon_plane
+
   planeshot: Array<Ball>
 
   //表示游戏中的其他物体的位置,它是一个 Array，其中的每个元素都是一个 Ball 类型的对象
-  ennemis: Array<Ball>
+  //ennemis: Array<Ball>
+  ennemis: Array<Polygon_ennemis>
   ennemishots: Array<Ball>
 
 
@@ -86,11 +89,12 @@ const iterate = (bound: Size) => (ball: Ball) => {
 }
 
 //这是一个柯里化的函数,作用是根据球的当前状态，计算并返回球的下一个状态
-const iterate_player = (bound: Size) => (plane: CustomBall) => {
+const iterate_player = (bound: Size) => (plane: Polygon_plane) => {
   // 递减无敌状态计数器
   const invincible = plane.invincible ? plane.invincible - 1 : plane.invincible
   // 保存球的坐标
-  const coord = plane.coord
+  //const coord = plane.coord
+  const coord = plane.centre
   
   // 计算新的速度（dx 和 dy）,根据边界条件和摩擦系数，如果球碰到边界，则速度将被设置为零
   const dx =
@@ -123,6 +127,16 @@ const iterate_player = (bound: Size) => (plane: CustomBall) => {
       dx,
       dy,
     },
+    points: [
+      { x: coord.x, y: coord.y - 50, dx, dy },                
+      { x: coord.x - 20, y: coord.y - 16, dx, dy },             
+      { x: coord.x - 25, y: coord.y + 18, dx, dy },    
+      { x: coord.x - 21, y: coord.y + 50, dx, dy },                
+      { x: coord.x + 21, y: coord.y + 50, dx, dy },            
+      { x: coord.x + 25, y: coord.y + 18, dx, dy },    
+      { x: coord.x + 20, y: coord.y - 16, dx, dy },   
+    ]
+    ,
   }
 }
 
@@ -175,17 +189,18 @@ export const moveX =
 (state: State) =>
 (i:number): State => {
   // 根据输入的值调整飞机的水平速度,调整飞机的水平速度。i 的正负值决定了飞机向左还是向右移动，乘以 5 是为了调整速度
-  state.plane.coord.dx += i*5
-  // state.plane.coord.x = (state.plane.coord.x + conf.RADIUS > state.size.width || state.plane.coord.x <= conf.RADIUS
-  //   ? (state.plane.coord.x + conf.RADIUS > state.size.width
-  //     ? state.size.width-conf.RADIUS
-  //     : 1+conf.RADIUS)
+  //state.plane.coord.dx += i*5
+  state.plane.centre.dx += i*5
+  // state.plane.coord.x = (state.plane.coord.x + conf.player_Width/2 > state.size.width || state.plane.coord.x <= conf.player_Width/2
+  //   ? (state.plane.coord.x + conf.player_Width/2 > state.size.width
+  //     ? state.size.width-conf.player_Width/2
+  //     : 1+conf.player_Width/2)
   //   : state.plane.coord.x + i)
-  state.plane.coord.x = (state.plane.coord.x + conf.player_Width/2 > state.size.width || state.plane.coord.x <= conf.player_Width/2
-    ? (state.plane.coord.x + conf.player_Width/2 > state.size.width
+  state.plane.centre.x = (state.plane.centre.x + conf.player_Width/2 > state.size.width || state.plane.centre.x <= conf.player_Width/2
+    ? (state.plane.centre.x + conf.player_Width/2 > state.size.width
       ? state.size.width-conf.player_Width/2
       : 1+conf.player_Width/2)
-    : state.plane.coord.x + i)
+    : state.plane.centre.x + i)
   return state
 }
 
@@ -194,12 +209,18 @@ export const moveY =
 (state: State) =>
 (i:number): State => {
   // 根据输入的值调整飞机的垂直速度
-  state.plane.coord.dy += i*5
-  state.plane.coord.y = (state.plane.coord.y + conf.player_Height/2 > state.size.height || state.plane.coord.y <= conf.player_Height/2 
-    ? (state.plane.coord.y + conf.player_Height/2  > state.size.height
+  // state.plane.coord.dy += i*5
+  // state.plane.coord.y = (state.plane.coord.y + conf.player_Height/2 > state.size.height || state.plane.coord.y <= conf.player_Height/2 
+  //   ? (state.plane.coord.y + conf.player_Height/2  > state.size.height
+  //     ? state.size.height-conf.player_Height/2 
+  //     : 1+conf.player_Height/2 )
+  //   : state.plane.coord.y + i)
+  state.plane.centre.dy += i*5
+  state.plane.centre.y = (state.plane.centre.y + conf.player_Height/2 > state.size.height || state.plane.centre.y <= conf.player_Height/2 
+    ? (state.plane.centre.y + conf.player_Height/2  > state.size.height
       ? state.size.height-conf.player_Height/2 
       : 1+conf.player_Height/2 )
-    : state.plane.coord.y + i)
+    : state.plane.centre.y + i)
   return state
 }
 

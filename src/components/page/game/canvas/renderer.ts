@@ -128,7 +128,7 @@ const drawCirle = (
   //设置填充颜色为指定的颜色
   ctx.fillStyle = color
   //绘制圆弧路径, (x,y)=centre de circle, 0 和 2 * Math.PI 分别是圆弧的起始角度和结束角度，表示从 0 到 2π 画一个完整的圆
-  ctx.arc(x, y, conf.RADIUS, 0, 2 * Math.PI)
+  ctx.arc(x, y-50, conf.RADIUS, 0, 2 * Math.PI)
   //填充路径，绘制圆形
   ctx.fill()
 }
@@ -234,9 +234,6 @@ export const render = (ctx: CanvasRenderingContext2D) => (state: State) => {
   limites(ctx)
 
   //通过 state.pos.map 遍历了游戏中的每个物体，并使用 drawCirle 函数来绘制圆形物体。每个物体的位置和颜色由游戏状态 state 中的信息确定
-  // state.pos.map((c) =>
-  //   drawCirle(ctx, c.coord, computeColor(c.life, conf.BALLLIFE, COLORS.RED))
-  // )
 
   state.planeshot.map((c) =>
     drawMunition(ctx, c.coord, computeColor(c.life, 1, COLORS.YELLOW))
@@ -248,22 +245,25 @@ export const render = (ctx: CanvasRenderingContext2D) => (state: State) => {
 
   state.ennemis.map((c) =>
     //drawCirle(ctx, c.coord, computeColor(c.life, conf.BALLLIFE, COLORS.GREY))
-    drawEnnemis(ctx, c.coord)
+    // drawEnnemis(ctx, c.coord)
+    drawEnnemis(ctx, c.centre)
   )
-  state.ennemis.map((c) =>
-    //drawCirle(ctx, c.coord, computeColor(c.life, conf.BALLLIFE, COLORS.GREY))
-  drawCirle(ctx, c.coord, computeColor(state.plane.life, conf.BALLLIFE, COLORS.RED))
-  )
+  // state.ennemis.map((c) =>
+  //   //drawCirle(ctx, c.coord, computeColor(c.life, conf.BALLLIFE, COLORS.GREY))
+  // drawCirle(ctx, c.coord, computeColor(state.plane.life, conf.BALLLIFE, COLORS.RED))
+  // )
 
   //使用 drawCirle 函数绘制了玩家飞机，其位置和颜色也由游戏状态中的信息确定
   //drawCirle(ctx, state.plane.coord, computeColor(state.plane.life, conf.BALLLIFE, COLORS.GREEN))
-  
+  drawCirle(ctx, state.plane.centre, computeColor(state.plane.life, conf.BALLLIFE, COLORS.GREEN))
+
   //drawPlane(ctx, state.plane.coord);
 
   if (state.plane.life !== state.plane.prevLife) {
     // 检查闪烁状态，如果正在闪烁且闪烁计数器为偶数，则绘制飞机
     if (state.plane.blinkCounter % 5 === 0) {
-      drawPlane(ctx, state.plane.coord); // 绘制飞机
+      //drawPlane(ctx, state.plane.coord); // 绘制飞机
+      drawPlane(ctx, state.plane.centre); // 绘制飞机
     }
     // 递增闪烁计数器
     state.plane.blinkCounter++;
@@ -274,28 +274,23 @@ export const render = (ctx: CanvasRenderingContext2D) => (state: State) => {
     }
   } else {
     // 如果生命值未发生变化，则正常绘制飞机
-    drawPlane(ctx, state.plane.coord); // 绘制飞机
+    // drawPlane(ctx, state.plane.coord); // 绘制飞机
+    drawPlane(ctx, state.plane.centre); // 绘制飞机
   }
 
   //drawTriangle(ctx, state.plane.coord, computeColor(state.plane.life, conf.BALLLIFE, COLORS.GREEN))
 
   //diplayGameText(ctx)(state)
   drawHearts(ctx, state.plane.life); // 绘制玩家剩余生命值对应的心形图像
-  console.log("life =", state.plane.life);
-  console.log("life precedent =", state.plane.prevLife);
+  //console.log("life =", state.plane.life);
+  //console.log("life precedent =", state.plane.prevLife);
 
   // 显示得分
   ctx.font = '24px Arial';
   ctx.fillStyle = 'white';
   ctx.fillText(`Score: ${state.score}`, 20, 40);
-  console.log("score = ",state.score)
-  //使用 drawCirle 函数绘制了玩家飞机，其位置和颜色也由游戏状态中的信息确定
-  // if (state.endOfGame) {
-  //   const text = 'END';
-  //   ctx.font = '48px Arial';
-  //   ctx.fillStyle = 'red'; // 设置文本颜色为红色
-  //   ctx.fillText(text, state.size.width / 2 - 80, state.size.height / 2);
-  // }
+  //console.log("score = ",state.score)
+
 
   const fin_audio = require("./audio/game_over.wav")
 

@@ -30,12 +30,27 @@ const Canvas = ({ height, width }: { height: number; width: number }) => {
       blinkCounter: 0,
       shootCounter: 30,
       // 设置玩家飞机的初始位置 
-      coord: {
-        x: (width - 120)/2 + 60,
-        y: height - 120,
-        dx: 0,
-        dy: 0,
-      },
+      // coord: {
+      //   x: (width - 120)/2 + 60,
+      //   y: height - 120,
+      //   dx: 0,
+      //   dy: 0,
+      // },
+      centre: {
+          x: (width - 120)/2 + 60,
+          y: height - 120,
+          dx: 0,
+          dy: 0,
+        },
+      points:[
+        { x: (width - 120)/2 + 60, y: height - 120 - 50, dx: 0, dy: 0 },                
+        { x: (width - 120)/2 + 60 - 20, y: height - 120 - 16, dx: 0, dy: 0 },             
+        { x: (width - 120)/2 + 60 - 25, y: height - 120 + 18, dx: 0, dy: 0 },    
+        { x: (width - 120)/2 + 60 - 21, y: height - 120 + 50, dx: 0, dy: 0 },                
+        { x: (width - 120)/2 + 60 + 21, y: height - 120 + 50, dx: 0, dy: 0 },            
+        { x: (width - 120)/2 + 60 + 25, y: height - 120 + 18, dx: 0, dy: 0 },    
+        { x: (width - 120)/2 + 60 + 20, y: height - 120 - 16, dx: 0, dy: 0 },                
+     ],
     
     },
     planeshot: new Array(0)/*. fill(1).map((_) => ({
@@ -48,15 +63,48 @@ const Canvas = ({ height, width }: { height: number; width: number }) => {
       },
     }))*/,
     // 初始化游戏中的球体数组
-    ennemis: new Array(10).fill(1).map((_) => ({
-      life: conf.BALLLIFE,
-      coord: {
-        x: randomInt(width - 120) + 60,
-        y: conf.RADIUS + 1,
-        dx: 0,
-        dy: 4 * randomSign() + 5,
-      },
-    })),
+    // ennemis: new Array(10).fill(1).map((_) => ({
+    //   life: conf.BALLLIFE,
+    //   // coord: {
+    //   //   x: randomInt(width - 120) + 60,
+    //   //   y: conf.RADIUS + 1,
+    //   //   dx: 0,
+    //   //   dy: 4 * randomSign() + 5,
+    //   // },
+    //   centre: {
+    //     x: randomInt(width - 120) + 60,
+    //     y: conf.RADIUS + 1,
+    //     dx: 0,
+    //     dy: 4 * randomSign() + 5,
+    //   },
+    //   points:[
+    //     { x: centre.x + 5 , y: conf.RADIUS + 1 + 25, dx: 0, dy: 0 },                
+    //     { x: centre.x + 25, y: conf.RADIUS + 1 - 25, dx: 0, dy: 0 },             
+    //     { x: centre.x - 25, y: conf.RADIUS + 1 - 25, dx: 0, dy: 0 },    
+    //     { x: centre.x - 5, y: conf.RADIUS + 1 + 25, dx: 0, dy: 0 },                
+        
+    //  ],
+
+    // })),
+    ennemis: new Array(10).fill(1).map((_) => {
+      const centreX = randomInt(width - 120) + 60;
+      const centreY = conf.RADIUS + 1;
+      return {
+          life: conf.BALLLIFE,
+          centre: {
+              x: centreX,
+              y: centreY,
+              dx: 0,
+              dy: 4 * randomSign() + 5,
+          },
+          points: [
+              { x: centreX + 5 , y: centreY + 25, dx: 0, dy: 0 },
+              { x: centreX + 25, y: centreY - 25, dx: 0, dy: 0 },
+              { x: centreX - 25, y: centreY - 25, dx: 0, dy: 0 },
+              { x: centreX - 5, y: centreY + 25, dx: 0, dy: 0 },                
+          ],
+      };
+  }),
     ennemishots: new Array(0),
     // pos: new Array(conf.NBBALL). fill(1).map((_) => ({
     //   // 设置每个球体的生命值
