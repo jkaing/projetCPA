@@ -11,7 +11,9 @@ type Ball = { coord: Coord; life: number; invincible?: number }
 type Size = { height: number; width: number }
 type CustomBall = { coord: Coord; life: number; prevLife: number; invincible?: number ; blinkCounter: number ; shootCounter: number }
 
-// 定义子弹对象
+type polygon_plane = {points: Coord[]; centre: Coord; original:Coord[]; life: number; prevLife: number; invincible?: number ; blinkCounter: number ; shootCounter: number }  
+
+type polygon_ennemis = {points: Coord[]; centre: Coord;  life: number; invincible?: number ; shootCounter: number }  
 
 
 //描述游戏的整体状态结构，并确保在代码中使用类型检查来提高代码的可靠性和可维护性。
