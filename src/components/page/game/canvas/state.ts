@@ -148,11 +148,11 @@ const iterate_ennemis = (bound: Size) => (ennemi: Polygon_ennemis) => {
   
   // 计算新的速度（dx 和 dy）,根据边界条件和摩擦系数，如果球碰到边界，则速度将被设置为零
   const dx =
-    (coord.x + conf.RADIUS >= bound.width || coord.x <= conf.RADIUS
+    (coord.x + conf.ennemis_Width/2 >= bound.width || coord.x <= conf.ennemis_Width/2
       ? 0//-coord.dx
       : coord.dx) * conf.FRICTION
   const dy =
-    (coord.y + conf.RADIUS >= bound.height || coord.y <= conf.RADIUS
+    (coord.y + conf.ennemis_Height/2 >= bound.height || coord.y <= conf.ennemis_Height/2
       ? 0//-coord.dy
       : coord.dy) * conf.FRICTION
 
@@ -168,16 +168,16 @@ const iterate_ennemis = (bound: Size) => (ennemi: Polygon_ennemis) => {
     ...ennemi,
     invincible,
     coord: {
-      x: (coord.x + conf.RADIUS >= bound.width || coord.x <= conf.RADIUS
-        ? (coord.x + conf.RADIUS >= bound.width
-          ? bound.width - conf.RADIUS
-          : 1+conf.RADIUS)
+      x: (coord.x + conf.ennemis_Width/2 >= bound.width || coord.x <= conf.ennemis_Width/2
+        ? (coord.x + conf.ennemis_Width/2 >= bound.width
+          ? bound.width - conf.ennemis_Width/2
+          : 1+conf.ennemis_Width/2)
         : coord.x + dx),
 
-      y: (coord.y + conf.RADIUS > bound.height || coord.y <= conf.RADIUS
-        ? (coord.y + conf.RADIUS > bound.height
-          ? bound.height - conf.RADIUS
-          : 1+conf.RADIUS)
+      y: (coord.y + conf.ennemis_Height/2 > bound.height || coord.y <= conf.ennemis_Height/2
+        ? (coord.y + conf.ennemis_Height/2 > bound.height
+          ? bound.height - conf.ennemis_Height/2
+          : 1+conf.ennemis_Height/2)
         : coord.y + dy),
       dx,
       dy,
@@ -252,6 +252,15 @@ export const moveX =
       ? state.size.width-conf.player_Width/2
       : 1+conf.player_Width/2)
     : state.plane.centre.x + i)
+  state.plane.points = [
+    { x: state.plane.centre.x, y: state.plane.centre.y - 50, dx: state.plane.centre.dx, dy: state.plane.centre.dy },                
+    { x: state.plane.centre.x - 20, y: state.plane.centre.y - 16, dx: state.plane.centre.dx, dy: state.plane.centre.dy },             
+    { x: state.plane.centre.x - 25, y: state.plane.centre.y + 18, dx: state.plane.centre.dx, dy: state.plane.centre.dy },    
+    { x: state.plane.centre.x - 21, y: state.plane.centre.y + 50, dx: state.plane.centre.dx, dy: state.plane.centre.dy },                
+    { x: state.plane.centre.x + 21, y: state.plane.centre.y + 50, dx: state.plane.centre.dx, dy: state.plane.centre.dy },            
+    { x: state.plane.centre.x + 25, y: state.plane.centre.y + 18, dx: state.plane.centre.dx, dy: state.plane.centre.dy },    
+    { x: state.plane.centre.x + 20, y: state.plane.centre.y - 16, dx: state.plane.centre.dx, dy: state.plane.centre.dy },   
+  ]
   return state
 }
 
@@ -272,6 +281,15 @@ export const moveY =
       ? state.size.height-conf.player_Height/2 
       : 1+conf.player_Height/2 )
     : state.plane.centre.y + i)
+  state.plane.points = [
+    { x: state.plane.centre.x, y: state.plane.centre.y - 50, dx: state.plane.centre.dx, dy: state.plane.centre.dy },                
+    { x: state.plane.centre.x - 20, y: state.plane.centre.y - 16, dx: state.plane.centre.dx, dy: state.plane.centre.dy },             
+    { x: state.plane.centre.x - 25, y: state.plane.centre.y + 18, dx: state.plane.centre.dx, dy: state.plane.centre.dy },    
+    { x: state.plane.centre.x - 21, y: state.plane.centre.y + 50, dx: state.plane.centre.dx, dy: state.plane.centre.dy },                
+    { x: state.plane.centre.x + 21, y: state.plane.centre.y + 50, dx: state.plane.centre.dx, dy: state.plane.centre.dy },            
+    { x: state.plane.centre.x + 25, y: state.plane.centre.y + 18, dx: state.plane.centre.dx, dy: state.plane.centre.dy },    
+    { x: state.plane.centre.x + 20, y: state.plane.centre.y - 16, dx: state.plane.centre.dx, dy: state.plane.centre.dy },   
+  ]
   return state
 }
 /*
@@ -427,7 +445,7 @@ const randomSign = () => Math.sign(Math.random() - 0.5)
 export const step = (state: State) => {
   if (state.ennemis.length<5) {
     const x = randomInt(state.size.width - 120) + 60
-    const y = conf.RADIUS + 1
+    const y = conf.ennemis_Height/2 + 1
     const dy = 4 * randomSign() + 5
     state.ennemis.push(({
       life: conf.BALLLIFE,
