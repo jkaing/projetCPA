@@ -239,6 +239,7 @@ const iterate_munitions = (bound: Size) => (ball: Ball) => {
 export const moveX =
 (state: State) =>
 (i:number): State => {
+  /*
   // 根据输入的值调整飞机的水平速度,调整飞机的水平速度。i 的正负值决定了飞机向左还是向右移动，乘以 5 是为了调整速度
   //state.plane.coord.dx += i*5
   state.plane.centre.dx += i*5
@@ -253,13 +254,40 @@ export const moveX =
       : 1+conf.player_Width/2)
     : state.plane.centre.x + i)
   state.plane.points = [
-    { x: state.plane.centre.x, y: state.plane.centre.y - 50, dx: state.plane.centre.dx, dy: state.plane.centre.dy },                
-    { x: state.plane.centre.x - 20, y: state.plane.centre.y - 16, dx: state.plane.centre.dx, dy: state.plane.centre.dy },             
-    { x: state.plane.centre.x - 25, y: state.plane.centre.y + 18, dx: state.plane.centre.dx, dy: state.plane.centre.dy },    
-    { x: state.plane.centre.x - 21, y: state.plane.centre.y + 50, dx: state.plane.centre.dx, dy: state.plane.centre.dy },                
-    { x: state.plane.centre.x + 21, y: state.plane.centre.y + 50, dx: state.plane.centre.dx, dy: state.plane.centre.dy },            
-    { x: state.plane.centre.x + 25, y: state.plane.centre.y + 18, dx: state.plane.centre.dx, dy: state.plane.centre.dy },    
-    { x: state.plane.centre.x + 20, y: state.plane.centre.y - 16, dx: state.plane.centre.dx, dy: state.plane.centre.dy },   
+    { x: x, y: state.plane.centre.y - 50, dx: state.plane.centre.dx, dy: state.plane.centre.dy },                
+    { x: x - 20, y: state.plane.centre.y - 16, dx: state.plane.centre.dx, dy: state.plane.centre.dy },             
+    { x: x - 25, y: state.plane.centre.y + 18, dx: state.plane.centre.dx, dy: state.plane.centre.dy },    
+    { x: x - 21, y: state.plane.centre.y + 50, dx: state.plane.centre.dx, dy: state.plane.centre.dy },                
+    { x: x + 21, y: state.plane.centre.y + 50, dx: state.plane.centre.dx, dy: state.plane.centre.dy },            
+    { x: x + 25, y: state.plane.centre.y + 18, dx: state.plane.centre.dx, dy: state.plane.centre.dy },    
+    { x: x + 20, y: state.plane.centre.y - 16, dx: state.plane.centre.dx, dy: state.plane.centre.dy },   
+  ]
+    */
+  var x = state.plane.centre.x
+  const player_Width = conf.player_Width
+  const width = state.size.width
+  if (x + player_Width/2 > width) {
+    state.plane.centre.dx = 0
+    state.plane.centre.x = width-player_Width/2
+  } else if (x <= player_Width/2) {
+    state.plane.centre.dx = 0
+    state.plane.centre.x = 1+player_Width/2
+  } else {
+    state.plane.centre.dx += i*5
+    state.plane.centre.x += i
+  }
+  x = state.plane.centre.x
+  const y = state.plane.centre.y
+  const dx = state.plane.centre.dx
+  const dy = state.plane.centre.dy
+  state.plane.points = [
+    { x: x, y: y - 50, dx: dx, dy: dy },                
+    { x: x - 20, y: y - 16, dx: dx, dy: dy },             
+    { x: x - 25, y: y + 18, dx: dx, dy: dy },    
+    { x: x - 21, y: y + 50, dx: dx, dy: dy },                
+    { x: x + 21, y: y + 50, dx: dx, dy: dy },            
+    { x: x + 25, y: y + 18, dx: dx, dy: dy },    
+    { x: x + 20, y: y - 16, dx: dx, dy: dy },   
   ]
   return state
 }
@@ -275,12 +303,27 @@ export const moveY =
   //     ? state.size.height-conf.player_Height/2 
   //     : 1+conf.player_Height/2 )
   //   : state.plane.coord.y + i)
+  /*
   state.plane.centre.dy += i*5
   state.plane.centre.y = (state.plane.centre.y + conf.player_Height/2 > state.size.height || state.plane.centre.y <= conf.player_Height/2 
     ? (state.plane.centre.y + conf.player_Height/2  > state.size.height
       ? state.size.height-conf.player_Height/2 
       : 1+conf.player_Height/2 )
     : state.plane.centre.y + i)
+    */
+  const y = state.plane.centre.y
+  const player_Height = conf.player_Height
+  const height = state.size.height
+  if (y + player_Height/2 > height) {
+    state.plane.centre.dy = 0
+    state.plane.centre.y = height-player_Height/2
+  } else if (y <= player_Height/2) {
+    state.plane.centre.dy = 0
+    state.plane.centre.y = 1+player_Height/2
+  } else {
+    state.plane.centre.dy += i*5
+    state.plane.centre.y += i
+  }
   state.plane.points = [
     { x: state.plane.centre.x, y: state.plane.centre.y - 50, dx: state.plane.centre.dx, dy: state.plane.centre.dy },                
     { x: state.plane.centre.x - 20, y: state.plane.centre.y - 16, dx: state.plane.centre.dx, dy: state.plane.centre.dy },             
