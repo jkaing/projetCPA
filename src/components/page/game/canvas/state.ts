@@ -1,6 +1,4 @@
-import { stat } from 'fs';
 import * as conf from './conf'
-//import collision_audio from './explosion-small.wav';
 
 
 //这定义了一个名为 Coord 的类型，表示游戏中的坐标。它包含 x 和 y 表示位置，以及 dx 和 dy 表示速度。
@@ -9,7 +7,6 @@ type Coord = { x: number; y: number; dx: number; dy: number }
 type Ball = { coord: Coord; life: number; invincible?: number }
 //表示画布的尺寸
 type Size = { height: number; width: number }
-type CustomBall = { coord: Coord; life: number; prevLife: number; invincible?: number ; blinkCounter: number ; shootCounter: number }
 
 type Polygon_plane = {points: Coord[]; centre: Coord; life: number; prevLife: number; invincible?: number ; blinkCounter: number ; shootCounter: number }  
 
@@ -19,17 +16,13 @@ type Polygon_ennemis = {points: Coord[]; centre: Coord;  life: number; invincibl
 //描述游戏的整体状态结构，并确保在代码中使用类型检查来提高代码的可靠性和可维护性。
 export type State = {
   //玩家的飞机
-  //plane: Ball 
-  //plane: CustomBall
   plane: Polygon_plane
 
   planeshot: Array<Ball>
 
-  //表示游戏中的其他物体的位置,它是一个 Array，其中的每个元素都是一个 Ball 类型的对象
-  //ennemis: Array<Ball>
+  //表示游戏中的其他物体的位置,它是一个 Array
   ennemis: Array<Polygon_ennemis>
   ennemishots: Array<Ball>
-
 
   //表示画布的尺寸
   size: Size
@@ -44,7 +37,7 @@ export type State = {
 // //计算两个坐标之间的平方距离
 const dist2 = (o1: Coord, o2: Coord) =>
   Math.pow(o1.x - o2.x, 2) + Math.pow(o1.y - o2.y, 2)
-
+/*
 //这是一个柯里化的函数,作用是根据球的当前状态，计算并返回球的下一个状态
 const iterate = (bound: Size) => (ball: Ball) => {
   // 递减无敌状态计数器
@@ -87,7 +80,7 @@ const iterate = (bound: Size) => (ball: Ball) => {
     },
   }
 }
-
+*/
 //这是一个柯里化的函数,作用是根据球的当前状态，计算并返回球的下一个状态
 const iterate_player = (bound: Size) => (plane: Polygon_plane) => {
   // 递减无敌状态计数器
@@ -97,14 +90,44 @@ const iterate_player = (bound: Size) => (plane: Polygon_plane) => {
   const coord = plane.centre
   
   // 计算新的速度（dx 和 dy）,根据边界条件和摩擦系数，如果球碰到边界，则速度将被设置为零
+  /*
   const dx =
     (coord.x + conf.player_Width/2 >= bound.width || coord.x <= conf.player_Width/2
-      ? 0//-coord.dx
+      ? 0
       : coord.dx) * conf.FRICTION
   const dy =
     (coord.y + conf.player_Height/2 >= bound.height || coord.y <= conf.player_Height/2
-      ? 0//-coord.dy
+      ? 0
       : coord.dy) * conf.FRICTION
+  */
+  var x = coord.x;
+  var y = coord.y;
+  var dx = coord.dx;
+  var dy = coord.dy;
+  const player_Width = conf.player_Width;
+  const player_Height = conf.player_Height;
+  const width = bound.width;
+  const height = bound.height;
+  if (x + conf.player_Width/2 > width) {
+    dx = 0
+    x = width - player_Width/2
+  } else if (x <= player_Width/2) {
+    dx = 0
+    x = 1+player_Width/2
+  } else {
+    dx = dx * conf.FRICTION
+    x = x + dx
+  }
+  if (y + player_Height/2 > height) {
+    dy = 0
+    y = height-player_Height/2
+  } else if (y <= player_Height/2) {
+    dy = 0
+    y = 1+player_Height/2
+  } else {
+    dy = dy * conf.FRICTION
+    y = y + dy
+  }
   // 如果速度太小，球停止移动
   if (Math.abs(dx) + Math.abs(dy) < conf.MINMOVE)
     return { ...plane, invincible, coord: { ...coord, dx: 0, dy: 0 } }
@@ -114,27 +137,31 @@ const iterate_player = (bound: Size) => (plane: Polygon_plane) => {
     ...plane,
     invincible,
     centre: {
+      /*
       x: (coord.x + conf.player_Width/2 >= bound.width || coord.x <= conf.player_Width/2
         ? (coord.x + conf.player_Width/2 >= bound.width
           ? bound.width - conf.player_Width/2
           : 1+conf.player_Width/2)
         : coord.x + dx),
-      y: (coord.y + conf.player_Height/2 > bound.height || coord.y <= conf.player_Height/2
-        ? (coord.y + conf.player_Height/2 > bound.height
+      y: (coord.y + conf.player_Height/2 >= bound.height || coord.y <= conf.player_Height/2
+        ? (coord.y + conf.player_Height/2 >= bound.height
           ? bound.height - conf.player_Height/2
           : 1+conf.player_Height/2)
         : coord.y + dy),
+        */
+      x,
+      y,
       dx,
       dy,
     },
     points: [
-      { x: coord.x, y: coord.y - 50, dx, dy },                
-      { x: coord.x - 20, y: coord.y - 16, dx, dy },             
-      { x: coord.x - 25, y: coord.y + 18, dx, dy },    
-      { x: coord.x - 21, y: coord.y + 50, dx, dy },                
-      { x: coord.x + 21, y: coord.y + 50, dx, dy },            
-      { x: coord.x + 25, y: coord.y + 18, dx, dy },    
-      { x: coord.x + 20, y: coord.y - 16, dx, dy },   
+      { x: x, y: y - 50, dx, dy },                
+      { x: x - 20, y: y - 16, dx, dy },             
+      { x: x - 25, y: y + 18, dx, dy },    
+      { x: x - 21, y: y + 50, dx, dy },                
+      { x: x + 21, y: y + 50, dx, dy },            
+      { x: x + 25, y: y + 18, dx, dy },    
+      { x: x + 20, y: y - 16, dx, dy },   
     ]
     ,
   }
@@ -239,30 +266,6 @@ const iterate_munitions = (bound: Size) => (ball: Ball) => {
 export const moveX =
 (state: State) =>
 (i:number): State => {
-  /*
-  // 根据输入的值调整飞机的水平速度,调整飞机的水平速度。i 的正负值决定了飞机向左还是向右移动，乘以 5 是为了调整速度
-  //state.plane.coord.dx += i*5
-  state.plane.centre.dx += i*5
-  // state.plane.coord.x = (state.plane.coord.x + conf.player_Width/2 > state.size.width || state.plane.coord.x <= conf.player_Width/2
-  //   ? (state.plane.coord.x + conf.player_Width/2 > state.size.width
-  //     ? state.size.width-conf.player_Width/2
-  //     : 1+conf.player_Width/2)
-  //   : state.plane.coord.x + i)
-  state.plane.centre.x = (state.plane.centre.x + conf.player_Width/2 > state.size.width || state.plane.centre.x <= conf.player_Width/2
-    ? (state.plane.centre.x + conf.player_Width/2 > state.size.width
-      ? state.size.width-conf.player_Width/2
-      : 1+conf.player_Width/2)
-    : state.plane.centre.x + i)
-  state.plane.points = [
-    { x: x, y: state.plane.centre.y - 50, dx: state.plane.centre.dx, dy: state.plane.centre.dy },                
-    { x: x - 20, y: state.plane.centre.y - 16, dx: state.plane.centre.dx, dy: state.plane.centre.dy },             
-    { x: x - 25, y: state.plane.centre.y + 18, dx: state.plane.centre.dx, dy: state.plane.centre.dy },    
-    { x: x - 21, y: state.plane.centre.y + 50, dx: state.plane.centre.dx, dy: state.plane.centre.dy },                
-    { x: x + 21, y: state.plane.centre.y + 50, dx: state.plane.centre.dx, dy: state.plane.centre.dy },            
-    { x: x + 25, y: state.plane.centre.y + 18, dx: state.plane.centre.dx, dy: state.plane.centre.dy },    
-    { x: x + 20, y: state.plane.centre.y - 16, dx: state.plane.centre.dx, dy: state.plane.centre.dy },   
-  ]
-    */
   var x = state.plane.centre.x
   const player_Width = conf.player_Width
   const width = state.size.width
@@ -296,22 +299,7 @@ export const moveX =
 export const moveY =
 (state: State) =>
 (i:number): State => {
-  // 根据输入的值调整飞机的垂直速度
-  // state.plane.coord.dy += i*5
-  // state.plane.coord.y = (state.plane.coord.y + conf.player_Height/2 > state.size.height || state.plane.coord.y <= conf.player_Height/2 
-  //   ? (state.plane.coord.y + conf.player_Height/2  > state.size.height
-  //     ? state.size.height-conf.player_Height/2 
-  //     : 1+conf.player_Height/2 )
-  //   : state.plane.coord.y + i)
-  /*
-  state.plane.centre.dy += i*5
-  state.plane.centre.y = (state.plane.centre.y + conf.player_Height/2 > state.size.height || state.plane.centre.y <= conf.player_Height/2 
-    ? (state.plane.centre.y + conf.player_Height/2  > state.size.height
-      ? state.size.height-conf.player_Height/2 
-      : 1+conf.player_Height/2 )
-    : state.plane.centre.y + i)
-    */
-  const y = state.plane.centre.y
+  var y = state.plane.centre.y
   const player_Height = conf.player_Height
   const height = state.size.height
   if (y + player_Height/2 > height) {
@@ -324,14 +312,18 @@ export const moveY =
     state.plane.centre.dy += i*5
     state.plane.centre.y += i
   }
+  y = state.plane.centre.y
+  const x = state.plane.centre.x
+  const dx = state.plane.centre.dx
+  const dy = state.plane.centre.dy
   state.plane.points = [
-    { x: state.plane.centre.x, y: state.plane.centre.y - 50, dx: state.plane.centre.dx, dy: state.plane.centre.dy },                
-    { x: state.plane.centre.x - 20, y: state.plane.centre.y - 16, dx: state.plane.centre.dx, dy: state.plane.centre.dy },             
-    { x: state.plane.centre.x - 25, y: state.plane.centre.y + 18, dx: state.plane.centre.dx, dy: state.plane.centre.dy },    
-    { x: state.plane.centre.x - 21, y: state.plane.centre.y + 50, dx: state.plane.centre.dx, dy: state.plane.centre.dy },                
-    { x: state.plane.centre.x + 21, y: state.plane.centre.y + 50, dx: state.plane.centre.dx, dy: state.plane.centre.dy },            
-    { x: state.plane.centre.x + 25, y: state.plane.centre.y + 18, dx: state.plane.centre.dx, dy: state.plane.centre.dy },    
-    { x: state.plane.centre.x + 20, y: state.plane.centre.y - 16, dx: state.plane.centre.dx, dy: state.plane.centre.dy },   
+    { x: x, y: y - 50, dx: dx, dy: dy },                
+    { x: x - 20, y: y - 16, dx: dx, dy: dy },             
+    { x: x - 25, y: y + 18, dx: dx, dy: dy },    
+    { x: x - 21, y: y + 50, dx: dx, dy: dy },                
+    { x: x + 21, y: y + 50, dx: dx, dy: dy },            
+    { x: x + 25, y: y + 18, dx: dx, dy: dy },    
+    { x: x + 20, y: y - 16, dx: dx, dy: dy },   
   ]
   return state
 }
@@ -347,7 +339,7 @@ const onCollision =
     audio.autoplay = true;
     return;
   }
-
+/*
 const shotedsound = require("./audio/shot.wav")
 
 const onShoted = 
@@ -359,7 +351,7 @@ const onShoted =
     audio.autoplay = true;
     return;
   }
-
+*/
 const explosionsound = require("./audio/explosion-small.wav")
 
 const onExplosion = 
@@ -448,8 +440,6 @@ const randomSign = () => Math.sign(Math.random() - 0.5)
 //用于在游戏中执行一步操作
 export const step = (state: State) => {
   if (state.ennemis.length<5) {
-    // const x = randomInt(state.size.width - 120) + 60
-    // const y = conf.ennemis_Height/2 + 1
     const { x, y } = generateEnemyPosition(state.ennemis, state.size.width, state.size.height);
     const dy = 4 * randomSign() + 5
     state.ennemis.push(({
@@ -492,8 +482,6 @@ export const step = (state: State) => {
       if (!state.plane.invincible) {
         state.plane.life--
         state.plane.invincible = 20
-        //state.score +=10
-        //onShoted()
         onCollision()
       }
       if (!p2.invincible) {
@@ -533,29 +521,10 @@ export const step = (state: State) => {
           p2.life--
           p2.invincible = 20
         }
-        
-        //collideBoing(p1.coord, p2.coord)
       }
     })
-    // 检测当前球体与其他球体之间的碰撞
-    /*
-    arr.slice(i + 1).map((p2) => {
-      if (collide(p1.coord, p2.coord)) {
-        // 如果发生碰撞，减少球体的生命值并设置无敌状态，然后处理碰撞效果
-        if (!p1.invincible) {
-          p1.life--
-          p1.invincible = 20
-        }
-        if (!p2.invincible) {
-          p2.life--
-          p2.invincible = 20
-        }
-        //collideBoing(p1.coord, p2.coord)
-      }
-    })
-    */
+    
     // 如果发生碰撞，减少球体的生命值并设置无敌状态，然后处理碰撞效果
-    //if (collide(state.plane.centre, p1.centre)) { 
     if (shapeOverlap_SAT(state.plane.points, p1.points)) {
       // 如果发生碰撞，减少球体和玩家飞机的生命值并设置无敌状态，然后处理碰撞效果
       if (!p1.invincible) {
@@ -568,7 +537,6 @@ export const step = (state: State) => {
         state.plane.invincible = 20
         onCollision()
       }
-      //collideBoing(p1.coord, state.plane.coord)
     }
   })
   // 更新玩家飞机的位置和球体的位置，并移除生命值为 0 的球体
@@ -578,7 +546,6 @@ export const step = (state: State) => {
     planeshot: state.planeshot.map(iterate_munitions(state.size)).filter((p) => p.life > 0).map(iterate_munitions(state.size)).filter((p) => p.coord.y > conf.MUNITIONRADIUS),
     ennemis: state.ennemis.map(iterate_ennemis(state.size)).filter((p) => p.life > 0).map(iterate_ennemis(state.size)).filter((p) => p.centre.y < state.size.height - conf.ennemis_Height/2),
     ennemishots: state.ennemishots.map(iterate_munitions(state.size)).filter((p) => p.life > 0).map(iterate_munitions(state.size)).filter((p) => p.coord.y < state.size.height - conf.MUNITIONRADIUS),
-    //pos: state.pos.map(iterate(state.size)).filter((p) => p.life > 0),
   }
 }
 
@@ -602,7 +569,6 @@ export const endOfGame = (state: State): boolean => {
   audio.src = filepath;
   audio.controls = true;
   audio.autoplay = true;
-  //audio.play();
   return false;
   
 };

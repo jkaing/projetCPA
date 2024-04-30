@@ -1,13 +1,8 @@
 import * as conf from './conf'
 import React, { useRef, useEffect, useState } from 'react'
-import { State,collide, generateEnemyPosition, step, mouseMove, endOfGame, moveX, moveY } from './state'
+import { State, step, mouseMove, endOfGame, moveX, moveY } from './state'
 import { render } from './renderer'
 import './Canvas.css'
-
-//生成一个小于指定最大值的随机整数
-const randomInt = (max: number) => Math.floor(Math.random() * max)
-// 用于生成一个随机的正负号 
-const randomSign = () => Math.sign(Math.random() - 0.5)
 
 //用于初始化 Canvas，并启动游戏循环
 //通常会将 Canvas 组件的渲染函数作为参数传入 initCanvas 函数，以便在 Canvas 初始化完成后开始渲染游戏画面
@@ -47,51 +42,10 @@ const Canvas = ({ height, width }: { height: number; width: number }) => {
      ],
     
     },
-    planeshot: new Array(0)/*. fill(1).map((_) => ({
-      life: conf.BALLLIFE,
-      coord: {
-        x: randomInt(width - 120) + 60,
-        y: height - conf.RADIUS - 1,
-        dx: 0,
-        dy: -(4 * randomSign() + 5) * 2,
-      },
-    }))*/,
+    planeshot: new Array(0),
     // 初始化游戏中的球体数组
-    ennemis: new Array(0),/*new Array(10).fill(1).map((_) => {
-      const centreX = randomInt(width - 120) + 60;
-      const centreY = conf.ennemis_Height/2 + 1;
-      // const { x, y } = generateEnemyPosition(initialState.ennemis, width, height);
-      // const centreX = x;
-      // const centreY = y;
-
-      return {
-          life: conf.BALLLIFE,
-          centre: {
-              x: centreX,
-              y: centreY,
-              dx: 0,
-              dy: 4 * randomSign() + 5,
-          },
-          points: [
-              { x: centreX + 5 , y: centreY + 25, dx: 0, dy: 0 },
-              { x: centreX + 25, y: centreY - 25, dx: 0, dy: 0 },
-              { x: centreX - 25, y: centreY - 25, dx: 0, dy: 0 },
-              { x: centreX - 5, y: centreY + 25, dx: 0, dy: 0 },                
-          ],
-      };
-  }),*/
+    ennemis: new Array(0),
     ennemishots: new Array(0),
-    // pos: new Array(conf.NBBALL). fill(1).map((_) => ({
-    //   // 设置每个球体的生命值
-    //   life: conf.BALLLIFE,
-    //   // 设置每个球体的随机初始位置和速度
-    //   coord: {
-    //     x: randomInt(width - 120) + 60,
-    //     y: randomInt(height - 120) + 60,
-    //     dx: 4 * randomSign(),
-    //     dy: 4 * randomSign(),
-    //   },
-    // })),
     // 设置游戏的尺寸
     size: { height, width },
     // 设置游戏的结束状态，默认为 true
@@ -117,12 +71,7 @@ const Canvas = ({ height, width }: { height: number; width: number }) => {
     // 如果游戏未结束，则继续执行游戏循环
     if (!state.current.endOfGame) requestAnimationFrame(() => iterate(ctx))
   }
-  /*
-  // 处理鼠标点击事件
-  const onClick = (e: PointerEvent) => {
-    state.current = click(state.current)(e)
-  }
-  */
+  
   // 处理鼠标移动事件
   const onMove = (e: PointerEvent) => {
     state.current = mouseMove(state.current)(e)
@@ -195,16 +144,13 @@ const Canvas = ({ height, width }: { height: number; width: number }) => {
   useEffect(() => {
     if (ref.current) {
       initCanvas(iterate)(ref.current)
-      //ref.current.addEventListener('click', onClick)
       ref.current.addEventListener('mousemove', onMove)
     }
     return () => {
-      //ref.current.removeEventListener('click', onMove)
       ref.current.removeEventListener('mousemove', onMove)
     }
   }, [])
 
-  //<canvas {...{ height, width, ref }} />  
   return (
     <div className="canvas-container"> {/* 使用带有背景样式的容器 */}
       <canvas {...{ height, width, ref }} />
